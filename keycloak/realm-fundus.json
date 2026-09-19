@@ -1,0 +1,131 @@
+{
+  "realm": "fundus",
+  "displayName": "Fundus",
+  "enabled": true,
+  "sslRequired": "external",
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "bruteForceProtected": true,
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "de",
+    "en"
+  ],
+  "defaultLocale": "de",
+  "groups": [
+    {
+      "name": "wiki-admin",
+      "path": "/wiki-admin"
+    },
+    {
+      "name": "wiki-redaktion",
+      "path": "/wiki-redaktion"
+    },
+    {
+      "name": "wiki-technik",
+      "path": "/wiki-technik"
+    },
+    {
+      "name": "wiki-mitarbeiter",
+      "path": "/wiki-mitarbeiter"
+    },
+    {
+      "name": "wiki-azubi",
+      "path": "/wiki-azubi"
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "wiki",
+      "name": "Fundus",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${FUNDUS_WIKI_SECRET}",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "implicitFlowEnabled": false,
+      "rootUrl": "${FUNDUS_WIKI_URL}",
+      "baseUrl": "${FUNDUS_WIKI_URL}",
+      "redirectUris": [
+        "${FUNDUS_WIKI_URL}/oidc/callback"
+      ],
+      "webOrigins": [
+        "${FUNDUS_WIKI_URL}"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "${FUNDUS_WIKI_URL}/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "protocolMappers": [
+        {
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "consentRequired": false,
+          "config": {
+            "full.path": "false",
+            "claim.name": "groups",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "titel",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "titel",
+            "claim.name": "titel",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "false",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        },
+        {
+          "name": "titel_stufe",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "titel_stufe",
+            "claim.name": "titel_stufe",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "false",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "components": {
+    "org.keycloak.userprofile.UserProfileProvider": [
+      {
+        "providerId": "declarative-user-profile",
+        "subComponents": {},
+        "config": {
+          "kc.user.profile.config": [
+            "{\"attributes\":[{\"name\":\"username\",\"displayName\":\"Benutzername\",\"validations\":{\"length\":{\"min\":3,\"max\":255},\"username-prohibited-characters\":{},\"up-username-not-idn-homograph\":{}},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"email\",\"displayName\":\"E-Mail\",\"validations\":{\"email\":{},\"length\":{\"max\":255}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"firstName\",\"displayName\":\"Vorname\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"lastName\",\"displayName\":\"Nachname\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\",\"user\"]},\"multivalued\":false},{\"name\":\"titel\",\"displayName\":\"Berufstitel\",\"group\":\"wiki\",\"validations\":{\"length\":{\"max\":120}},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false,\"annotations\":{\"inputHelperTextBefore\":\"Steht im Wiki neben dem Namen, z. B. Junior Consultant.\"}},{\"name\":\"titel_stufe\",\"displayName\":\"Farbe des Titels\",\"group\":\"wiki\",\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false,\"validations\":{\"options\":{\"options\":[\"leitung\",\"senior\",\"junior\",\"azubi\",\"team\"]}},\"annotations\":{\"inputType\":\"select\",\"inputHelperTextBefore\":\"Leer lassen: Das Wiki leitet die Farbe aus dem Titel ab.\"}}],\"groups\":[{\"name\":\"user-metadata\",\"displayHeader\":\"User metadata\",\"displayDescription\":\"Attributes, which refer to user metadata\"},{\"name\":\"wiki\",\"displayHeader\":\"Fundus\",\"displayDescription\":\"Angaben für das Wiki\"}]}"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+name: Fehler melden
+description: Etwas funktioniert nicht wie beschrieben.
+labels: [fehler]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Sicherheitslücken bitte **nicht** hier melden, sondern wie in SECURITY.md beschrieben.
+        Keine Zugangsdaten, Firmeninhalte oder personenbezogenen Daten in Beschreibung oder Screenshots.
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: Was passiert?
+      description: Was hast du erwartet, was ist stattdessen passiert?
+    validations:
+      required: true
+  - type: textarea
+    id: schritte
+    attributes:
+      label: Schritte zum Nachstellen
+      placeholder: |
+        1. Als Person mit Rolle … anmelden
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: meldungen
+    attributes:
+      label: Fehlermeldungen
+      description: Browser-Konsole, `/config/log/bookstack/laravel.log` oder `docker compose logs <dienst>`.
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Commit oder Release von Fundus, BookStack-Image-Tag
+      placeholder: "main @ abc1234, lscr.io/linuxserver/bookstack:26.05.4"
+    validations:
+      required: true
+  - type: dropdown
+    id: betrieb
+    attributes:
+      label: Betrieb
+      options:
+        - lokal (docker-compose.lokal.yml)
+        - Server hinter Reverse Proxy
+    validations:
+      required: true

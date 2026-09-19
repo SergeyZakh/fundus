@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 330" font-family="Instrument Sans, Segoe UI, Arial, sans-serif" fill="#141414">
+  <!-- Architektur von Fundus. Durchgezogen: Dienste im Stapel. Gestrichelt: externe Dienste. -->
+  <defs>
+    <marker id="pfeil" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="#5C5C5C"/></marker>
+    <style>
+      .kasten { fill: #fff; stroke: #BDBDBD; stroke-width: 1; }
+      .kern { fill: #fff; stroke: #141414; stroke-width: 1.4; }
+      .extern { fill: #fff; stroke: #8C8C8C; stroke-width: 1; stroke-dasharray: 4 3; }
+      .linie { fill: none; stroke: #5C5C5C; stroke-width: 1.1; marker-end: url(#pfeil); }
+      .name { font-size: 11px; font-weight: 600; }
+      .info { font-size: 9px; fill: #5C5C5C; }
+      .beschriftung { font-size: 8.5px; fill: #8C8C8C; }
+    </style>
+  </defs>
+
+  <!-- Stapel -->
+  <rect x="150" y="14" width="450" height="300" fill="#FAFAFA" stroke="#D6D6D6"/>
+  <text x="166" y="302" class="beschriftung">DOCKER-COMPOSE-STAPEL</text>
+
+  <!-- Extern -->
+  <rect x="10" y="30" width="110" height="46" class="extern"/>
+  <text x="22" y="49" class="name">Anmeldung</text>
+  <text x="22" y="64" class="info">OIDC, Anbieter offen</text>
+
+  <rect x="620" y="30" width="90" height="46" class="extern"/>
+  <text x="632" y="49" class="name">Ollama</text>
+  <text x="632" y="64" class="info">KI-Modelle</text>
+
+  <rect x="10" y="132" width="110" height="46" class="kasten"/>
+  <text x="22" y="151" class="name">Browser</text>
+  <text x="22" y="166" class="info">Mitarbeitende</text>
+
+  <!-- Dienste -->
+  <rect x="170" y="132" width="100" height="46" class="kasten"/>
+  <text x="182" y="151" class="name">Proxy</text>
+  <text x="182" y="166" class="info">TLS, Domains</text>
+
+  <rect x="300" y="110" width="150" height="90" class="kern"/>
+  <text x="312" y="130" class="name">wiki</text>
+  <text x="312" y="146" class="info">BookStack 26.05.4</text>
+  <text x="312" y="160" class="info">Theme „fundus“</text>
+  <text x="312" y="174" class="info">Queue-Worker, cron</text>
+
+  <rect x="300" y="236" width="150" height="46" class="kasten"/>
+  <text x="312" y="255" class="name">drawio</text>
+  <text x="312" y="270" class="info">Diagramm-Editor</text>
+
+  <rect x="480" y="110" width="100" height="90" class="kasten"/>
+  <text x="492" y="130" class="name">datenbank</text>
+  <text x="492" y="146" class="info">MariaDB 11.8</text>
+  <text x="492" y="160" class="info">Inhalte, Rückmel-</text>
+  <text x="492" y="174" class="info">dungen, Vektoren</text>
+
+  <rect x="480" y="236" width="100" height="46" class="kasten"/>
+  <text x="492" y="255" class="name">sicherung</text>
+  <text x="492" y="270" class="info">täglich, 14 Tage</text>
+
+  <!-- Verbindungen -->
+  <path d="M120 155 H168" class="linie"/>
+  <path d="M270 155 H298" class="linie"/>
+  <path d="M220 178 V259 H298" class="linie"/>
+  <path d="M450 155 H478" class="linie"/>
+  <path d="M530 236 V202" class="linie"/>
+  <path d="M65 132 V78" class="linie"/>
+  <text x="72" y="109" class="beschriftung">Login</text>
+  <path d="M120 53 H340 V108" class="linie"/>
+  <text x="166" y="47" class="beschriftung">Token mit Gruppen</text>
+  <path d="M410 108 V53 H618" class="linie"/>
+  <text x="470" y="47" class="beschriftung">OLLAMA_URL</text>
+</svg>

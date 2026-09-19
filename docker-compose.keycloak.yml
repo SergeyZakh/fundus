@@ -1,0 +1,80 @@
+# Keycloak als Anmeldedienst für Fundus, optional neben dem Wiki.
+# Wer schon Keycloak, Authentik oder Entra ID hat, braucht diese Datei nicht und trägt nur OIDC_* ein.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.keycloak.yml up -d
+#
+# Beim ersten Start legt keycloak/realm-fundus.json den Realm „fundus“ an: Client „wiki“,
+# Gruppen wiki-admin … wiki-azubi, Claims „groups“, „titel“ und „titel_stufe“. Konten legt man danach
+# in der Keycloak-Oberfläche an (KEYCLOAK_URL/admin). Der Import überspringt einen vorhandenen Realm.
+# Ablauf: docs/entwicklerdoku.md, Kapitel „Anmeldung“.
+
+services:
+  keycloak:
+    # Feste Version, damit ein Update eine bewusste Änderung ist.
+    image: quay.io/keycloak/keycloak:26.3.5
+    restart: unless-stopped
+    command: ["start", "--import-realm"]
+    # Der Reverse Proxy beendet TLS und leitet KEYCLOAK_URL an diesen Port weiter
+    # (Vorgabe 127.0.0.1:8180, nur für diesen Rechner).
+    ports:
+      - "${KEYCLOAK_PORT:-127.0.0.1:8180}:8080"
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-datenbank:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?KEYCLOAK_DB_PASSWORD fehlt}
+      # Öffentliche Adresse mit https://; daraus baut Keycloak alle Links und den Aussteller im Token.
+      KC_HOSTNAME: ${KEYCLOAK_URL:?KEYCLOAK_URL fehlt}
+      KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: xforwarded
+      KC_HEALTH_ENABLED: "true"
+      # Nur beim allerersten Start: legt das Admin-Konto im Realm „master“ an.
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:?KEYCLOAK_ADMIN_PASSWORD fehlt}
+      # Werte für die Platzhalter im Realm-Import.
+      FUNDUS_WIKI_URL: ${APP_URL:?APP_URL fehlt}
+      FUNDUS_WIKI_SECRET: ${OIDC_CLIENT_SECRET:?OIDC_CLIENT_SECRET fehlt}
+    volumes:
+      - ./keycloak:/opt/keycloak/data/import:ro
+    depends_on:
+      keycloak-datenbank:
+        condition: service_healthy
+    healthcheck:
+      # Das Image hat weder curl noch wget; /health/ready auf dem Verwaltungsport 9000 per Bash abfragen.
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && printf 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && grep -q '\"UP\"' <&3"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  keycloak-datenbank:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD:?KEYCLOAK_DB_PASSWORD fehlt}
+    volumes:
+      - keycloak-datenbank:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+volumes:
+  keycloak-datenbank:

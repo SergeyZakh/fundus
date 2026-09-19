@@ -1,0 +1,5 @@
+# Shell-Skripte laufen im Linux-Container; Windows-Zeilenenden würden sie brechen.
+* text=auto eol=lf
+*.woff2 binary
+*.png binary
+*.pdf binary

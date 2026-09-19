@@ -1,0 +1,57 @@
+# Prüft bei jedem Push und Pull Request, was ohne laufendes Wiki prüfbar ist:
+# Syntax (PHP, JavaScript, Python, Shell, JSON), Compose-Dateien und die eigenen Images.
+# Die Theme-Tests mit echten Daten (skripte/testen.sh) laufen lokal, siehe CONTRIBUTING.md.
+name: Prüfen
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  syntax:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: PHP
+        run: find theme skripte -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+
+      - name: JavaScript
+        # Fremdbibliotheken in vendor/ sind minifiziert und werden nicht geprüft.
+        run: find theme skripte docs \( -name '*.js' -o -name '*.mjs' \) -not -path '*/vendor/*' -print0 | xargs -0 -n1 node --check
+
+      - name: Python
+        run: python3 -m py_compile skripte/*.py ocr/*.py
+
+      - name: Shell
+        run: shellcheck -S warning skripte/*.sh
+
+      - name: JSON
+        run: python3 -m json.tool keycloak/realm-fundus.json > /dev/null
+
+  compose:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Compose-Dateien auflösen
+        env:
+          # In .env.example auskommentiert, von docker-compose.keycloak.yml aber verlangt.
+          OIDC_CLIENT_SECRET: ci
+        run: |
+          cp .env.example .env
+          for kombi in "" lokal test keycloak "keycloak anmeldung-test"; do
+            dateien="-f docker-compose.yml"
+            for teil in $kombi; do dateien="$dateien -f docker-compose.$teil.yml"; done
+            echo "docker compose $dateien config"
+            docker compose $dateien config -q
+          done
+
+      - name: Eigene Images bauen (ocr, sicherung)
+        run: |
+          cp .env.example .env
+          docker compose build ocr sicherung

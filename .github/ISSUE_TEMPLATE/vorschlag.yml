@@ -1,0 +1,21 @@
+name: Vorschlag
+description: Neue Funktion oder Verbesserung vorschlagen.
+labels: [vorschlag]
+body:
+  - type: textarea
+    id: anlass
+    attributes:
+      label: Anlass
+      description: Welches Problem soll gelöst werden? Wer ist betroffen (Lesende, Redaktion, Admins, Betrieb)?
+    validations:
+      required: true
+  - type: textarea
+    id: vorschlag
+    attributes:
+      label: Vorschlag
+      description: Wie könnte die Lösung aussehen?
+  - type: textarea
+    id: alternativen
+    attributes:
+      label: Alternativen
+      description: Andere Wege, die du erwogen hast, z. B. eine Einstellung in BookStack selbst.

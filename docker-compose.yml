@@ -1,0 +1,325 @@
+# Fundus, ein Firmenwiki: BookStack, MariaDB, draw.io, Sprachmodell und nächtliche Sicherung.
+# Anleitung: docs/entwicklerdoku.md (Kapitel „Betrieb“), ohne Vorkenntnisse: docs/erste-schritte.md.
+#
+# Nach außen offen sind nur wiki (WIKI_PORT) und drawio (DRAWIO_PORT), als Vorgabe nur für diesen
+# Rechner. Davor gehört ein Reverse Proxy mit TLS (Caddy, nginx, Traefik …), der APP_URL an WIKI_PORT
+# und die draw.io-Adresse an DRAWIO_PORT weiterleitet. Für einen Test auf dem eigenen Rechner
+# zusätzlich docker-compose.lokal.yml.
+#
+# Dienste
+#   wiki            BookStack mit dem Theme theme/fundus (Oberfläche, Rückmeldungen, KI-Chat)
+#   datenbank       MariaDB 11.8 (ab 11.7 mit Vektoren, die der KI-Chat braucht)
+#   drawio          eigenes draw.io für Diagramme, damit nichts an diagrams.net geht
+#   ocr             Texterkennung für Anhänge und Bilder (PDFs, Bilder), damit Suche und KI deren Inhalt finden
+#   ollama          Sprachmodell für den KI-Chat; ein vorhandenes Ollama geht über OLLAMA_URL ebenso
+#   ollama-modelle  lädt beim Start KI_MODELL und KI_EINBETTUNG in das Volume und beendet sich
+#   sicherung       wartet bis SICHERUNG_UHRZEIT und sichert Datenbank und Uploads
+
+services:
+  wiki:
+    # Community-Image von linuxserver.io; BookStack selbst bietet kein offizielles
+    # Image an. Die Version ist fest, damit ein Update eine bewusste Änderung ist
+    # (Ablauf in docs/entwicklerdoku.md, Kapitel „Update“).
+    image: lscr.io/linuxserver/bookstack:26.05.4
+    restart: unless-stopped
+
+    # Nur für den Reverse Proxy auf demselben Rechner (Vorgabe 127.0.0.1:6875).
+    ports:
+      - "${WIKI_PORT:-127.0.0.1:6875}:80"
+
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: ${TZ:-Europe/Berlin}
+
+      APP_URL: ${APP_URL:?APP_URL fehlt}
+      APP_KEY: ${APP_KEY:?APP_KEY fehlt}
+      # Du-Form; BookStack liefert dafür eine eigene Sprachdatei „de_informal“ mit.
+      APP_LANG: de_informal
+      # Gespeichert wird in UTC, angezeigt in deutscher Zeit.
+      APP_DISPLAY_TIMEZONE: ${TZ:-Europe/Berlin}
+      APP_THEME: fundus
+      # Der Reverse Proxy beendet TLS vor dem Container und meldet das über X-Forwarded-Proto.
+      # Ohne diese Angabe erkennt BookStack HTTPS nicht und Weiterleitungen gehen auf http.
+      APP_PROXIES: "*"
+      FILE_UPLOAD_SIZE_LIMIT: "50"
+      # Keine Daten nach außen: kein Gravatar (E-Mail-Hash), kein draw.io von diagrams.net.
+      DISABLE_EXTERNAL_SERVICES: "true"
+      # Diagramme über das eigene draw.io (Dienst „drawio“). Der Browser lädt es direkt,
+      # deshalb die öffentliche Adresse, nicht der Dienstname. BookStack erlaubt die
+      # Adresse automatisch als eingebetteten Rahmen.
+      DRAWIO: ${DRAWIO_URL:-false}
+      # Eigene Werkzeuge als Links auf der Startseite: „Name|Adresse|Beschreibung“, mehrere mit Semikolon.
+      FUNDUS_WERKZEUGE: ${FUNDUS_WERKZEUGE:-}
+      # KI-Chat Fundus über Ollama (Entwicklerdoku, Kapitel „KI-Chat“). Vorgabe: Dienst „ollama“
+      # in diesem Stapel. Ein anderes Ollama: dessen Adresse. Leer (OLLAMA_URL=): kein Chatfenster.
+      OLLAMA_URL: ${OLLAMA_URL-http://ollama:11434}
+      KI_MODELL: ${KI_MODELL:-qwen3.5:4b}
+      # Einbettungsmodell und seine Vektorlänge; nach einem Wechsel: artisan fundus:ki-index --neu
+      KI_EINBETTUNG: ${KI_EINBETTUNG:-bge-m3}
+      KI_DIMENSION: ${KI_DIMENSION:-1024}
+      # Größter Kosinus-Abstand, bis zu dem ein Textstück als Treffer gilt (kleiner = strenger).
+      KI_MAX_ABSTAND: ${KI_MAX_ABSTAND:-0.72}
+      # Regelmäßige Prüfung von Artikeln: Vorgabe in Monaten, pro Thema oder Artikel über das
+      # Schlagwort „Prüfintervall“ änderbar (Zahl oder „nie“). 0: nur Artikel mit Schlagwort.
+      FUNDUS_PRUEFINTERVALL: ${FUNDUS_PRUEFINTERVALL:-12}
+      # Texterkennung für Anhänge und Bilder (Dienst „ocr“). Leer: Anhänge werden nicht gelesen.
+      OCR_URL: ${OCR_URL-http://ocr:8080}
+      # E-Mail-Benachrichtigungen, KI-Index und Texterkennung im Hintergrund statt beim Speichern.
+      QUEUE_CONNECTION: database
+
+      DB_HOST: datenbank
+      DB_PORT: "3306"
+      DB_DATABASE: ${DB_DATABASE:-bookstack}
+      DB_USERNAME: ${DB_USERNAME:-bookstack}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD fehlt}
+
+      # Anmeldung. Für die Ersteinrichtung „standard“, danach „oidc“ mit einem beliebigen OIDC-Anbieter:
+      # Keycloak (docker-compose.keycloak.yml), Authentik, Entra ID … Fertige Werte je Anbieter in .env.example,
+      # Ablauf in docs/entwicklerdoku.md (Kapitel „Anmeldung“). BookStack verlangt eine https-Adresse.
+      AUTH_METHOD: ${AUTH_METHOD:-standard}
+      AUTH_AUTO_INITIATE: ${AUTH_AUTO_INITIATE:-false}
+      # Beschriftung des Knopfs auf der Anmeldeseite („Mit … anmelden“).
+      OIDC_NAME: ${OIDC_NAME:-Firmenkonto}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET:-}
+      OIDC_ISSUER: ${OIDC_ISSUER:-}
+      OIDC_ISSUER_DISCOVER: "true"
+      OIDC_DISPLAY_NAME_CLAIMS: ${OIDC_DISPLAY_NAME_CLAIMS:-name}
+      # Claim mit der dauerhaften Konto-ID. Keycloak und Authentik: „sub“. Entra: „oid“, weil „sub“
+      # sich ändert, wenn die App-Registrierung neu angelegt wird.
+      OIDC_EXTERNAL_ID_CLAIM: ${OIDC_EXTERNAL_ID_CLAIM:-sub}
+      OIDC_ADDITIONAL_SCOPES: ${OIDC_ADDITIONAL_SCOPES:-}
+      # Gruppen im Token (wiki-admin, wiki-redaktion, wiki-technik, wiki-mitarbeiter, wiki-azubi). BookStack
+      # gleicht sie bei jeder Anmeldung mit den Rollen ab und entfernt Rollen, deren Gruppe weggefallen ist.
+      OIDC_USER_TO_GROUPS: "true"
+      OIDC_GROUPS_CLAIM: ${OIDC_GROUPS_CLAIM:-groups}
+      OIDC_REMOVE_FROM_GROUPS: "true"
+      # Abmelden im Wiki meldet auch beim Anbieter ab, sonst wäre man sofort wieder drin.
+      OIDC_END_SESSION_ENDPOINT: "true"
+      # Berufstitel pflegen Admins im Wiki (Einstellungen → Benutzer). Nur wer sie stattdessen aus dem Token will,
+      # setzt hier den Claim (z. B. „titel“); dann überschreibt jede Anmeldung, was im Wiki steht.
+      FUNDUS_TITEL_CLAIM: ${FUNDUS_TITEL_CLAIM:-}
+      FUNDUS_STUFE_CLAIM: ${FUNDUS_STUFE_CLAIM:-titel_stufe}
+
+    volumes:
+      # Alles, was BookStack schreibt: Uploads, Anhänge, erzeugte .env, Logs.
+      - wiki-daten:/config
+      # Das Theme kommt aus diesem Repo. Nicht „:ro“: Das Image setzt beim Start
+      # die Besitzrechte unter /config und meldet sonst bei jedem Start Fehler.
+      - ./theme/fundus:/config/www/themes/fundus
+      # Nur lesend: status.json der Sicherung, damit Fundus den Admins Fehler melden kann.
+      - sicherungen:/fundus-sicherungen:ro
+
+    depends_on:
+      datenbank:
+        condition: service_healthy
+
+    healthcheck:
+      # /status prüft Datenbank, Cache und Sitzung und antwortet nur bei Erfolg mit 200.
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      # Beim ersten Start legt BookStack die Tabellen an, das dauert.
+      start_period: 120s
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  datenbank:
+    image: mariadb:11.8
+    restart: unless-stopped
+    expose:
+      - "3306"
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE:-bookstack}
+      MARIADB_USER: ${DB_USERNAME:-bookstack}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD fehlt}
+      # Root wird nie gebraucht; ein Zufallspasswort verhindert ein vergessenes Standardpasswort.
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - datenbank:/var/lib/mysql
+    healthcheck:
+      # Das Skript liegt im offiziellen Image und wartet, bis InnoDB wirklich bereit ist.
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  drawio:
+    # Offizielles Image von JGraph. Die Diagramme selbst speichert BookStack
+    # (als Bild mit eingebetteten Diagrammdaten), draw.io hält keine Daten.
+    image: jgraph/drawio:31.4.5
+    restart: unless-stopped
+    # Der Browser lädt draw.io direkt, deshalb eine eigene Adresse über den Reverse Proxy
+    # (Vorgabe 127.0.0.1:6876, nur für diesen Rechner).
+    ports:
+      - "${DRAWIO_PORT:-127.0.0.1:6876}:8080"
+    environment:
+      # Ohne Zugangsdaten für Google Drive, OneDrive oder GitLab bleiben diese Anbindungen aus.
+      DRAWIO_SERVER_URL: ${DRAWIO_SERVER_URL:-}
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  ocr:
+    # Texterkennung für Anhänge und Bilder (Ordner ocr/): Das Wiki schickt hochgeladene PDFs und Bilder hierher und hängt
+    # den Text für Suche und KI an den Artikel (theme/fundus/dateitext). Hält keine Daten.
+    build: ./ocr
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      OCR_SPRACHEN: ${OCR_SPRACHEN:-deu+eng}
+      # Konfidenz 0–100: Wörter darunter fallen weg, Scan-Seiten mit schlechterem Mittel ganz.
+      OCR_WORT_MIN: ${OCR_WORT_MIN:-50}
+      OCR_SEITE_MIN: ${OCR_SEITE_MIN:-60}
+      # Längere PDFs werden nur bis hierhin gelesen.
+      OCR_MAX_SEITEN: ${OCR_MAX_SEITEN:-50}
+    # PDF- und Bildparser sind Angriffsfläche: nur lesen, keine Rechte, begrenzte Mittel.
+    read_only: true
+    tmpfs:
+      - /tmp:size=256m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1g
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/gesund', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  sicherung:
+    # MariaDB-Image wie die Datenbank (mariadb-dump passt zur Serverversion), dazu rclone (Ordner sicherung/).
+    build: ./sicherung
+    restart: unless-stopped
+    entrypoint: ["/bin/bash", "/skripte/sicherung.sh"]
+    environment:
+      TZ: ${TZ:-Europe/Berlin}
+      DB_HOST: datenbank
+      DB_DATABASE: ${DB_DATABASE:-bookstack}
+      DB_USERNAME: ${DB_USERNAME:-bookstack}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD fehlt}
+      SICHERUNG_UHRZEIT: ${SICHERUNG_UHRZEIT:-02:30}
+      SICHERUNG_TAGE: ${SICHERUNG_TAGE:-14}
+      # Kopie außer Haus als rclone-Verbindungszeichenkette; leer: keine Kopie. Beispiele in .env.example.
+      SICHERUNG_KOPIE: ${SICHERUNG_KOPIE:-}
+      # Verschlüsselt Inhalt und Dateinamen vor dem Hochladen. Ohne ihn ist die Kopie wertlos: in den Passwort-Manager.
+      SICHERUNG_KOPIE_SCHLUESSEL: ${SICHERUNG_KOPIE_SCHLUESSEL:-}
+      SICHERUNG_KOPIE_TAGE: ${SICHERUNG_KOPIE_TAGE:-90}
+    volumes:
+      - ./skripte/sicherung.sh:/skripte/sicherung.sh:ro
+      - ./skripte/wiederherstellen.sh:/skripte/wiederherstellen.sh:ro
+      # Schreibend, weil die Wiederherstellung Uploads zurückspielt.
+      - wiki-daten:/wiki
+      - sicherungen:/sicherungen
+    depends_on:
+      datenbank:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+
+  ollama:
+    # Sprachmodell für den KI-Chat. Kein Port nach außen: Nur das Wiki fragt es im Container-Netz.
+    # Wer ein vorhandenes Ollama (etwa auf einem Rechner mit Grafikkarte) nutzt, setzt OLLAMA_URL
+    # auf dessen Adresse und entfernt diesen Dienst und ollama-modelle in seinem Fork.
+    image: ollama/ollama:0.34.2
+    restart: unless-stopped
+    expose:
+      - "11434"
+    volumes:
+      # Modelle überleben Neustarts; geladen werden sie vom Dienst ollama-modelle.
+      - ollama-modelle:/root/.ollama
+    environment:
+      # Anfragen kommen aus dem Container-Netz, nicht von localhost.
+      OLLAMA_HOST: "0.0.0.0:11434"
+      # Modelle im Speicher halten spart die Ladezeit bei der nächsten Frage.
+      OLLAMA_KEEP_ALIVE: "30m"
+    healthcheck:
+      # Der Befehl fragt den eigenen Server; antwortet er, ist Ollama bereit.
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    # qwen3.5:4b und bge-m3 zusammen brauchen auf der CPU rund 6 GB.
+    mem_limit: 8g
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"
+    # Mit Grafikkarte (NVIDIA Container Toolkit auf dem Host nötig):
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  ollama-modelle:
+    # Lädt Sprach- und Einbettungsmodell beim Start in das Volume (von ollama.com) und beendet sich.
+    # Sind sie schon da, prüft der Aufruf nur kurz auf eine neuere Fassung.
+    image: ollama/ollama:0.34.2
+    restart: "no"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: "ollama:11434"
+      KI_MODELL: ${KI_MODELL:-qwen3.5:4b}
+      KI_EINBETTUNG: ${KI_EINBETTUNG:-bge-m3}
+    entrypoint: ["/bin/sh", "-c", "ollama pull \"$$KI_MODELL\" && ollama pull \"$$KI_EINBETTUNG\""]
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  wiki-daten:
+  datenbank:
+  sicherungen:
+  ollama-modelle:

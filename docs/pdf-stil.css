@@ -1,0 +1,107 @@
+/* Aussehen der PDF, die docs/pdf-bauen.mjs aus docs/entwicklerdoku.md baut.
+   Bewusst zurückhaltend: Schwarz, Grautöne, feine Linien, keine Symbole, keine Akzentfarben.
+
+   Inhalt: Grundlagen · Deckblatt · Inhaltsverzeichnis · Überschriften · Text und Listen
+           · Code · Tabellen · Hinweise · Abbildungen */
+
+/* ---------- Grundlagen ---------- */
+@font-face { font-family: 'Instrument Sans'; font-weight: 400 600; src: url(../theme/fundus/public/fonts/instrument-sans-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215; }
+@font-face { font-family: 'Instrument Sans'; font-weight: 400 600; src: url(../theme/fundus/public/fonts/instrument-sans-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+A720-A7FF; }
+
+:root {
+  --text: #141414;
+  --grau: #5C5C5C;
+  --hell: #8C8C8C;
+  --linie: #E3E3E3;
+  --linie-fest: #BDBDBD;
+  --flaeche: #F6F6F6;
+  --mono: "Cascadia Mono", Consolas, monospace;
+}
+@page { size: A4; margin: 20mm 20mm 22mm; }
+@page :first { margin: 0; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font: 400 9.3pt/1.6 "Instrument Sans", "Segoe UI", system-ui, sans-serif; color: var(--text); }
+a { color: inherit; text-decoration: none; }
+strong, b { font-weight: 600; }
+em { font-style: italic; }
+
+/* ---------- Deckblatt ---------- */
+.deckblatt { height: 297mm; padding: 22mm 24mm 22mm; display: flex; flex-direction: column; break-after: page; }
+.deckblatt .oben { display: flex; justify-content: space-between; font-size: 8pt; color: var(--grau); letter-spacing: .02em; padding-bottom: 4mm; border-bottom: 1px solid var(--text); }
+.deckblatt .mitte { margin-top: 78mm; }
+.deckblatt .art { font-size: 9pt; color: var(--grau); margin-bottom: 5mm; letter-spacing: .02em; }
+.deckblatt h1 { font-size: 44pt; line-height: 1; letter-spacing: -.03em; margin: 0 0 6mm; font-weight: 600; }
+.deckblatt .unter { font-size: 13pt; color: var(--grau); margin: 0; max-width: 125mm; line-height: 1.45; }
+.deckblatt .fakten { margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 8mm; border-top: 1px solid var(--text); }
+.deckblatt .fakten div { padding: 3.2mm 0; border-bottom: 1px solid var(--linie); }
+.deckblatt .fakten b { display: block; font-size: 8.8pt; font-weight: 600; }
+.deckblatt .fakten span { display: block; color: var(--grau); font-size: 8pt; line-height: 1.4; }
+.deckblatt .fuss { margin-top: 5mm; display: flex; justify-content: space-between; font-size: 7.5pt; color: var(--hell); }
+
+/* ---------- Inhaltsverzeichnis ---------- */
+.inhalt { break-after: page; }
+.inhalt-kopf { margin-bottom: 6mm; }
+.inhalt-kopf .etikett { display: none; }
+.inhalt h1 { font-size: 20pt; font-weight: 600; letter-spacing: -.02em; margin: 0; padding-bottom: 4mm; border-bottom: 1px solid var(--text); }
+.inhalt ol { list-style: none; padding: 0; margin: 0; }
+.inhalt > ol > li { display: grid; grid-template-columns: 10mm 1fr; margin: 0 0 2.4mm; break-inside: avoid; }
+.inhalt > ol > li > a { display: contents; font-weight: 600; font-size: 10pt; }
+.inhalt > ol > li > a .nr { color: var(--hell); font-weight: 400; font-variant-numeric: tabular-nums; }
+.inhalt ol ol { grid-column: 2; margin: .6mm 0 0; columns: 2; column-gap: 8mm; }
+.inhalt ol ol li { font-size: 8.3pt; color: var(--grau); line-height: 1.45; margin: 0; break-inside: avoid; }
+.inhalt ol ol li a { display: flex; gap: 2.5mm; }
+.inhalt ol ol .nr { color: var(--hell); min-width: 7mm; font-variant-numeric: tabular-nums; }
+
+/* ---------- Überschriften ---------- */
+/* Kapitel mit „neue Seite“ beginnen oben auf einer Seite, die anderen laufen mit Abstand weiter. */
+h1.kapitel { margin: 14mm 0 3mm; padding-bottom: 3mm; border-bottom: 1px solid var(--text); break-after: avoid; break-inside: avoid; font-weight: 600; }
+h1.kapitel.neu { break-before: page; margin-top: 0; }
+h1.kapitel .etikett { display: block; font-size: 8pt; font-weight: 400; color: var(--hell); letter-spacing: .04em; margin-bottom: 1.5mm; }
+h1.kapitel .titel { display: block; font-size: 20pt; line-height: 1.15; letter-spacing: -.02em; }
+h1.kapitel + p { font-size: 10.2pt; color: var(--grau); margin: 4mm 0 7mm; max-width: 150mm; break-after: avoid; }
+
+h2 { display: flex; align-items: baseline; gap: 3mm; font-size: 12pt; font-weight: 600; margin: 9mm 0 3mm; break-after: avoid; }
+h2 .nr { font-size: 9pt; font-weight: 400; color: var(--hell); min-width: 8mm; font-variant-numeric: tabular-nums; }
+h3 { font-size: 9.6pt; font-weight: 600; margin: 6mm 0 2mm; break-after: avoid; }
+
+/* ---------- Text und Listen ---------- */
+p { margin: 0 0 3mm; }
+ul, ol { margin: 0 0 4mm; padding-left: 5mm; }
+li { margin: 0 0 1.2mm; padding-left: .8mm; }
+ul > li::marker { color: var(--hell); }
+ol > li::marker { color: var(--grau); font-variant-numeric: tabular-nums; }
+li > pre { margin-top: 2mm; }
+
+/* ---------- Code ---------- */
+code { font-family: var(--mono); font-size: 8pt; background: var(--flaeche); border-radius: 2px; padding: 0 .9mm; }
+pre { font-family: var(--mono); font-size: 7.8pt; line-height: 1.55; background: var(--flaeche); color: var(--text); border: 1px solid var(--linie); border-radius: 2px; padding: 3mm 4mm; margin: 0 0 4mm; white-space: pre-wrap; word-break: break-word; break-inside: avoid; }
+pre code { all: unset; }
+pre:has(code.language-text) { white-space: pre; }
+
+/* ---------- Tabellen ---------- */
+table { width: 100%; border-collapse: collapse; margin: 0 0 5mm; font-size: 8.5pt; line-height: 1.45; }
+thead { display: table-header-group; }
+tr { break-inside: avoid; }
+th { text-align: left; font-weight: 600; font-size: 8pt; color: var(--text); padding: 1.8mm 3mm 1.8mm 0; border-top: 1px solid var(--text); border-bottom: 1px solid var(--text); }
+td { padding: 1.8mm 3mm 1.8mm 0; border-bottom: 1px solid var(--linie); vertical-align: top; }
+tbody tr:last-child td { border-bottom: 1px solid var(--linie-fest); }
+/* Nur sehr lange Werte umbrechen, kurze Wörter bleiben ganz. */
+td code { word-break: normal; overflow-wrap: break-word; }
+
+/* ---------- Hinweise (> [!info] Titel) ---------- */
+/* Keine Farben: Info und Tipp mit grauer Linie, Achtung und Gefahr mit schwarzer. */
+.kasten { margin: 0 0 5mm; padding: 1mm 0 1mm 4.5mm; border-left: 2px solid var(--linie-fest); break-inside: avoid; }
+.kasten.achtung, .kasten.gefahr { border-left-color: var(--text); }
+.kasten > :last-child { margin-bottom: 0; }
+.kasten .titel { display: block; font-weight: 600; font-size: 9pt; margin-bottom: .8mm; }
+.kasten p { color: #333; }
+blockquote { margin: 0 0 4mm; padding: 1mm 0 1mm 4.5mm; border-left: 2px solid var(--linie-fest); color: var(--grau); }
+
+/* ---------- Abbildungen ---------- */
+figure { margin: 2mm 0 6mm; break-inside: avoid; }
+figure .rahmen { text-align: center; }
+figure.bildschirm img { max-width: 100%; max-height: 115mm; border: 1px solid var(--linie); display: inline-block; }
+figure.diagramm img { width: 100%; display: block; }
+figcaption { font-size: 7.8pt; color: var(--grau); margin-top: 2mm; line-height: 1.45; }
+figcaption b { font-weight: 600; color: var(--text); margin-right: 1.5mm; }

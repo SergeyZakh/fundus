@@ -1,0 +1,21 @@
+# Schlägt Updates für fest eingetragene Versionen als Pull Request vor. Ein Update von BookStack
+# (lscr.io/linuxserver/bookstack) nur nach dem Ablauf im Kapitel „Update“ der Entwicklerdoku übernehmen:
+# Das Theme hängt sich an BookStack-Views, die sich zwischen Versionen ändern können.
+version: 2
+updates:
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: docker
+    directories:
+      - /ocr
+      - /sicherung
+    schedule:
+      interval: weekly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
