@@ -6,12 +6,12 @@
 # Beim ersten Start legt keycloak/realm-fundus.json den Realm „fundus“ an: Client „wiki“,
 # Gruppen wiki-admin … wiki-azubi, Claims „groups“, „titel“ und „titel_stufe“. Konten legt man danach
 # in der Keycloak-Oberfläche an (KEYCLOAK_URL/admin). Der Import überspringt einen vorhandenen Realm.
-# Ablauf: docs/entwicklerdoku.md, Kapitel „Anmeldung“.
+# Ablauf: docs/ENTWICKLUNG.md, Kapitel „Anmeldung“.
 
 services:
   keycloak:
     # Feste Version, damit ein Update eine bewusste Änderung ist.
-    image: quay.io/keycloak/keycloak:26.3.5
+    image: quay.io/keycloak/keycloak:26.7.4
     restart: unless-stopped
     command: ["start", "--import-realm"]
     # Der Reverse Proxy beendet TLS und leitet KEYCLOAK_URL an diesen Port weiter

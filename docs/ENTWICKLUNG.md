@@ -4,7 +4,7 @@ untertitel: Das Firmenwiki und seine KI – Aufbau, Betrieb und Pflege.
 marke: Fundus · Entwicklerdoku
 stand: 19.09.2026
 fakten:
-  - BookStack 26.05.4 | linuxserver-Image, Theme „fundus“
+  - BookStack 26.05.5 | linuxserver-Image, Theme „fundus“
   - MariaDB 11.8 | Inhalte, Rückmeldungen, KI-Vektoren
   - Ollama 0.34.2 | qwen3.5:4b · bge-m3, im Stapel oder eigener Server
   - Docker Compose | hinter eigenem Reverse Proxy mit TLS

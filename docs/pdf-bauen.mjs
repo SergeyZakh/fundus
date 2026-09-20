@@ -1,10 +1,10 @@
-// Baut docs/entwicklerdoku.pdf aus docs/entwicklerdoku.md (Aussehen: docs/pdf-stil.css).
+// Baut docs/ENTWICKLUNG.pdf aus docs/ENTWICKLUNG.md (Aussehen: docs/pdf-stil.css).
 //
 //   node docs/pdf-bauen.mjs            (Chrome-Pfad über die Variable CHROME änderbar)
 //
 // Ablauf: Markdown mit marked (liegt schon im Theme) in HTML umwandeln, Deckblatt, Inhaltsverzeichnis,
 // Kapitelnummern und Hinweiskästen ergänzen, in headless Chrome öffnen und als PDF drucken.
-// Schreibweisen für Kästen, Bilder und Seitenumbrüche stehen oben in entwicklerdoku.md.
+// Schreibweisen für Kästen, Bilder und Seitenumbrüche stehen oben in ENTWICKLUNG.md.
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import fs from 'node:fs';
@@ -14,10 +14,10 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromePfad } from '../skripte/chrome.mjs';
 
 const HIER = path.dirname(fileURLToPath(import.meta.url));
-const QUELLE = path.join(HIER, 'entwicklerdoku.md');
-const ZIEL = path.join(HIER, 'entwicklerdoku.pdf');
+const QUELLE = path.join(HIER, 'ENTWICKLUNG.md');
+const ZIEL = path.join(HIER, 'ENTWICKLUNG.pdf');
 // Zwischendatei neben der Quelle, damit relative Pfade zu Bildern und Schrift stimmen; wird am Ende gelöscht.
-const ZWISCHEN = path.join(HIER, '.entwicklerdoku-druck.html');
+const ZWISCHEN = path.join(HIER, '.ENTWICKLUNG-druck.html');
 const CHROME = chromePfad();
 const { marked } = createRequire(import.meta.url)('../theme/fundus/ki/vendor/marked.umd.js');
 

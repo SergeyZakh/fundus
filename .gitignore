@@ -2,10 +2,13 @@
 .env
 
 # Erzeugt: node docs/pdf-bauen.mjs
-docs/entwicklerdoku.pdf
+docs/ENTWICKLUNG.pdf
 
 __pycache__/
 node_modules/
+*.log
+.DS_Store
+Thumbs.db
 
 # Persönliche Merklisten
 docs/todo.md

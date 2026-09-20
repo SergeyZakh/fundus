@@ -1,5 +1,5 @@
 # Fundus, ein Firmenwiki: BookStack, MariaDB, draw.io, Sprachmodell und nächtliche Sicherung.
-# Anleitung: docs/entwicklerdoku.md (Kapitel „Betrieb“), ohne Vorkenntnisse: docs/erste-schritte.md.
+# Anleitung: docs/ENTWICKLUNG.md (Kapitel „Betrieb“), ohne Vorkenntnisse: docs/START.md.
 #
 # Nach außen offen sind nur wiki (WIKI_PORT) und drawio (DRAWIO_PORT), als Vorgabe nur für diesen
 # Rechner. Davor gehört ein Reverse Proxy mit TLS (Caddy, nginx, Traefik …), der APP_URL an WIKI_PORT
@@ -19,8 +19,8 @@ services:
   wiki:
     # Community-Image von linuxserver.io; BookStack selbst bietet kein offizielles
     # Image an. Die Version ist fest, damit ein Update eine bewusste Änderung ist
-    # (Ablauf in docs/entwicklerdoku.md, Kapitel „Update“).
-    image: lscr.io/linuxserver/bookstack:26.05.4
+    # (Ablauf in docs/ENTWICKLUNG.md, Kapitel „Update“).
+    image: lscr.io/linuxserver/bookstack:26.05.5
     restart: unless-stopped
 
     # Nur für den Reverse Proxy auf demselben Rechner (Vorgabe 127.0.0.1:6875).
@@ -76,7 +76,7 @@ services:
 
       # Anmeldung. Für die Ersteinrichtung „standard“, danach „oidc“ mit einem beliebigen OIDC-Anbieter:
       # Keycloak (docker-compose.keycloak.yml), Authentik, Entra ID … Fertige Werte je Anbieter in .env.example,
-      # Ablauf in docs/entwicklerdoku.md (Kapitel „Anmeldung“). BookStack verlangt eine https-Adresse.
+      # Ablauf in docs/ENTWICKLUNG.md (Kapitel „Anmeldung“). BookStack verlangt eine https-Adresse.
       AUTH_METHOD: ${AUTH_METHOD:-standard}
       AUTH_AUTO_INITIATE: ${AUTH_AUTO_INITIATE:-false}
       # Beschriftung des Knopfs auf der Anmeldeseite („Mit … anmelden“).

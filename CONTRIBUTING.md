@@ -9,7 +9,7 @@ python skripte/env-anlegen.py --lokal
 docker compose -p fundus -f docker-compose.yml -f docker-compose.lokal.yml up -d
 ```
 
-Das Theme ist in den Container gemountet: Datei speichern, Seite neu laden. Aufbau, Bausteine und Routen beschreibt die [Entwicklerdoku](docs/entwicklerdoku.md), Kapitel „Aufbau des Codes“.
+Das Theme ist in den Container gemountet: Datei speichern, Seite neu laden. Aufbau, Bausteine und Routen beschreibt die [Entwicklerdoku](docs/ENTWICKLUNG.md), Kapitel „Aufbau des Codes“.
 
 Zwei Regeln, die sonst Zeit kosten:
 

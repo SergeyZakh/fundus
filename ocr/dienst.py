@@ -4,7 +4,7 @@ Texterkennung für Fundus: PDFs und Bilder rein, Text raus.
     POST /erkennen   Rohdaten der Datei im Body → JSON {text, konfidenz, seiten, seiten_gelesen, seiten_ocr, seiten_verworfen}
     GET  /gesund     200, sobald der Dienst läuft
 
-Das Wiki (theme/fundus/anhangtext) schickt jeden hochgeladenen Anhang hierher und legt den Text im Artikel ab.
+Das Wiki (theme/fundus/dateitext) schickt jeden hochgeladenen Anhang hierher und legt den Text im Artikel ab.
 Der Dienst hält nichts: Jede Datei liegt nur für die Dauer der Anfrage in /tmp.
 
 PDF-Seiten mit eigenem Text (am Rechner erstellt) werden nur ausgelesen, nur Seiten ohne Text (Scans) gehen durch

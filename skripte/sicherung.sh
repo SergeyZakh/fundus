@@ -11,7 +11,7 @@
 # Nach jedem Lauf steht in /sicherungen/status.json, wie es ausging; Fundus meldet Fehler den Admins.
 # Eine Kopie zurückholen (und entschlüsseln), danach wie gewohnt wiederherstellen.sh:
 #   docker compose exec sicherung bash /skripte/sicherung.sh holen <JJJJ-MM-TT_HHMM>
-# Wiederherstellen: skripte/wiederherstellen.sh, Ablauf in docs/entwicklerdoku.md (Kapitel „Sicherung“).
+# Wiederherstellen: skripte/wiederherstellen.sh, Ablauf in docs/ENTWICKLUNG.md (Kapitel „Sicherung“).
 
 set -euo pipefail
 

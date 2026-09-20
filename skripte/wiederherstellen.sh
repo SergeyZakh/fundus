@@ -7,7 +7,7 @@
 #   docker compose exec sicherung bash /skripte/wiederherstellen.sh 2026-09-13_0230
 #   docker compose start wiki
 #
-# Die Datenbank wird dabei vollständig ersetzt. Ablauf und Prüfung: docs/entwicklerdoku.md (Kapitel „Sicherung“).
+# Die Datenbank wird dabei vollständig ersetzt. Ablauf und Prüfung: docs/ENTWICKLUNG.md (Kapitel „Sicherung“).
 
 set -euo pipefail
 

@@ -5,7 +5,7 @@ Programmierung auskennen musst, zum Ausprobieren auf dem eigenen Rechner. Am End
 mit Beispielinhalten, Handbuch und KI-Chat.
 
 Für den Betrieb in einer Firma mit eigener Adresse, https und Anmeldung über Firmenkonten ist die
-IT zuständig; die Anleitung dafür steht in der [Entwicklerdoku](entwicklerdoku.md), Kapitel
+IT zuständig; die Anleitung dafür steht in der [Entwicklerdoku](ENTWICKLUNG.md), Kapitel
 „Betrieb“. Wie man das Wiki *benutzt*, erklärt das Handbuch „So funktioniert das Wiki“, das
 Schritt 9 ins Wiki einspielt.
 

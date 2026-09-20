@@ -13,7 +13,7 @@ Benötigt nur Python 3.10+ ohne Zusatzpakete. Aufruf:
     python skripte/einrichten.py
     python skripte/einrichten.py --beispiele    # zusätzlich drei Beispielartikel (Microsoft 365)
 
-Das Token gehört einem Konto mit der Rolle Admin (Anleitung: docs/entwicklerdoku.md,
+Das Token gehört einem Konto mit der Rolle Admin (Anleitung: docs/ENTWICKLUNG.md,
 Kapitel „Ersteinrichtung“).
 
 Aufbau der Datei: oben die Daten (ROLLEN, REGALE, ZUGANG), darunter ein kleiner API-Client

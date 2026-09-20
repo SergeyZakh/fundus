@@ -15,7 +15,7 @@ jobs:
   syntax:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: PHP
         run: find theme skripte -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
@@ -36,7 +36,7 @@ jobs:
   compose:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Compose-Dateien auflösen
         env:
