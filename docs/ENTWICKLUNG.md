@@ -264,6 +264,10 @@ Alle Variablen mit Erklärung stehen in `.env.example`. `python skripte/env-anle
 | `SICHERUNG_KOPIE`, `SICHERUNG_KOPIE_SCHLUESSEL` | Ziel und Schlüssel der verschlüsselten Kopie außer Haus |
 | `FUNDUS_WERKZEUGE` | Links zu eigenen Werkzeugen auf der Startseite: `Name\|Adresse\|Beschreibung`, mehrere mit `;` getrennt; leer: kein Kasten |
 | `FUNDUS_PRUEFINTERVALL` | Prüffrist in Monaten, Vorgabe 12 |
+| `OIDC_NAME`, `AUTH_AUTO_INITIATE` | Beschriftung des Anmeldeknopfes; `true` leitet sofort zum Anbieter weiter |
+| `FUNDUS_TITEL_CLAIM`, `FUNDUS_STUFE_CLAIM` | nur, wenn Berufstitel aus dem Anmeldedienst kommen sollen statt aus dem Wiki; dann überschreibt jede Anmeldung den Titel |
+| `OCR_WORT_MIN`, `OCR_SEITE_MIN` | Konfidenz 0–100: Wörter darunter fallen weg, Scan-Seiten mit schlechterem Mittel ganz (Vorgabe 50 und 60) |
+| `OCR_MAX_SEITEN` | so viele Seiten je PDF, Vorgabe 50 |
 | `OCR_URL` | Texterkennung; leer schaltet sie ab |
 
 Im Wiki selbst unter **Einstellungen → Personalisierung** den Namen des Wikis setzen. Die Startseite „Bereiche“ gibt das Theme vor.

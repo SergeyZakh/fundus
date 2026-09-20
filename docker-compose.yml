@@ -22,6 +22,8 @@ services:
     # (Ablauf in docs/ENTWICKLUNG.md, Kapitel „Update“).
     image: lscr.io/linuxserver/bookstack:26.05.5
     restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
     # Nur für den Reverse Proxy auf demselben Rechner (Vorgabe 127.0.0.1:6875).
     ports:

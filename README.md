@@ -93,6 +93,13 @@ Prüfung wie beim Öffnen.
 - **Prüffristen.** Artikel werden nach einem einstellbaren Intervall zur Prüfung fällig.
   Verantwortliche sehen das auf der Startseite und im Chatfenster.
 
+- **Startseite und Lesen.** Bereiche mit ihren Themen, deine Aktivität der letzten zwölf Monate,
+  Links zu den Werkzeugen der Firma; im Artikel Stand und Lesezeit, dazu ein Zen-Modus, der alles
+  bis auf den Text ausblendet.
+
+- **Fundus meldet, was ansteht.** Wird einer deiner Artikel als veraltet gemeldet oder ist eine
+  Prüfung fällig, steht das am Chatknopf — ohne dass jemand eine Mail schreiben muss.
+
 - **Texterkennung.** Text aus hochgeladenen PDFs und Bildern wird durchsuchbar und steht auch der
   KI zur Verfügung.
 
