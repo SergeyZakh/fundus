@@ -118,11 +118,10 @@ Den Chat öffnet der runde Knopf mit dem **F** unten rechts.
    Stelle.
 3. **Vollbild** – mit früheren Gesprächen und allen Quellen des Gesprächs.
 
-![Schnellsuche mit Strg + K: Suchfeld, Treffer mit Textausschnitt, Tastenhinweise](handbuch/bilder/suche-strg-k.png)
+`Strg` + `K` (am Mac `Cmd` + `K`) öffnet die Schnellsuche von jeder Seite aus. Die Treffer
+erscheinen beim Tippen, mit Pfad und Textausschnitt; `Enter` öffnet, `Esc` schließt.
 
-1. **Suchfeld** – `Strg` + `K` (am Mac `Cmd` + `K`), die Treffer erscheinen beim Tippen.
-2. **Treffer** mit Pfad und Textausschnitt, das Suchwort ist hervorgehoben.
-3. **Tasten** – `Enter` öffnet, `Esc` schließt; `Enter` ohne Auswahl führt zur vollen Suchseite.
+![Schnellsuche mit Strg + K: Suchfeld, drei Treffer mit Textausschnitt, Tastenleiste am Fuß](handbuch/bilder/suche-strg-k.png)
 
 BookStack selbst bleibt unverändert. Das Theme hängt eigene Bausteine an vorhandene Views an und
 nutzt überall BookStacks Rechteprüfung.

@@ -81,9 +81,17 @@ const MARKIEREN = `(async (auftrag) => {
   const stil = document.createElement('style');
   stil.textContent = '.fundus-ki-knopf, .back-to-top { display: none !important; }';
   document.head.append(stil);
+  // Ein zweiter Durchgang (größeres Fenster) darf die Marken nicht verdoppeln.
+  document.querySelectorAll('[data-marken-ebene]').forEach((e) => e.remove());
+  // Ein modaler <dialog> liegt im Top-Layer und deckt jedes z-index zu. Die Marken müssen dann
+  // in den Dialog selbst, sonst liegen sie hinter ihm – bei der Schnellsuche waren sie nur noch
+  // als unscharfe Flecken zu sehen. Im Dialog wird in Fensterkoordinaten gerechnet (fixed).
+  const imDialog = document.querySelector('dialog[open]');
+  const mitScroll = imDialog ? 0 : 1;
   const ebene = document.createElement('div');
-  ebene.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0;z-index:99999;pointer-events:none';
-  document.body.append(ebene);
+  ebene.dataset.markenEbene = '';
+  ebene.style.cssText = 'position:' + (imDialog ? 'fixed' : 'absolute') + ';left:0;top:0;width:0;height:0;z-index:99999;pointer-events:none';
+  (imDialog || document.body).append(ebene);
   const gesetzt = [];
   for (const m of auftrag.marken || []) {
     const els = alle(m.ziel);
@@ -93,7 +101,7 @@ const MARKIEREN = `(async (auftrag) => {
     if (m.rahmen !== false) {
       const box = document.createElement('div');
       box.style.cssText = 'position:absolute;border:2.5px solid #E8590C;border-radius:10px;box-shadow:0 0 0 3px rgba(232,89,12,.15)';
-      Object.assign(box.style, { left: k.x - pad + scrollX + 'px', top: k.y - pad + scrollY + 'px', width: k.r - k.x + pad * 2 + 'px', height: k.b - k.y + pad * 2 + 'px' });
+      Object.assign(box.style, { left: k.x - pad + scrollX * mitScroll + 'px', top: k.y - pad + scrollY * mitScroll + 'px', width: k.r - k.x + pad * 2 + 'px', height: k.b - k.y + pad * 2 + 'px' });
       ebene.append(box);
     }
     const n = document.createElement('div');
@@ -113,19 +121,22 @@ const MARKIEREN = `(async (auftrag) => {
       : seite.includes('links') ? k.x - pad - versatzX - weg : (k.x + k.r) / 2 - 13;
     const y = seite.includes('unten') ? k.b + pad - 26 + versatzY + weg
       : seite.includes('oben') ? k.y - pad - versatzY - weg : (k.y + k.b) / 2 - 13;
-    Object.assign(n.style, { left: x + scrollX + 'px', top: y + scrollY + 'px' });
+    Object.assign(n.style, { left: x + scrollX * mitScroll + 'px', top: y + scrollY * mitScroll + 'px' });
     ebene.append(n);
     gesetzt.push({ x: x + scrollX, y: y + scrollY });
   }
   let clip;
+  let inhaltUnten;
   if (auftrag.ausschnitt === 'fenster') {
     clip = { x: 0, y: 0, width: innerWidth, height: innerHeight };
+    inhaltUnten = innerHeight;
   } else {
     const treffer = alle(auftrag.ausschnitt);
     if (!treffer.length) throw new Error('Ausschnitt nicht gefunden: ' + auftrag.ausschnitt);
     const k = rahmen(treffer);
     const rand = auftrag.rand ?? 24;
     clip = { x: Math.max(0, k.x - rand + scrollX), y: Math.max(0, k.y - rand + scrollY), width: k.r - k.x + rand * 2, height: k.b - k.y + rand * 2 };
+    inhaltUnten = k.b + scrollY;
   }
   // Eine Marke am äußeren Rand des Ausschnitts fiele sonst aus dem Bild: Ausschnitt so weit
   // ziehen, dass jede gesetzte Marke vollständig darin liegt – mit demselben Rand wie das Bild
@@ -139,7 +150,8 @@ const MARKIEREN = `(async (auftrag) => {
     clip.width = rechts - clip.x;
     clip.height = unten - clip.y;
   }
-  return clip;
+  // inhaltUnten ohne Rand: daran entscheidet das Skript, ob das Fenster zu klein ist.
+  return { clip, inhaltUnten };
 })`;
 
 // Beispiel-Rückmeldungen für das Bild der Auswertung: vor dem Rendern anlegen, danach wieder löschen.
@@ -205,7 +217,17 @@ async function aufnehmen(bild) {
   await auswerten(`document.fonts.ready.then(() => true)`);
   if (bild.vorbereiten) await auswerten(`(async () => { ${bild.vorbereiten} })()`);
   await pause(400);
-  const clip = await auswerten(`${MARKIEREN}(${JSON.stringify({ marken: bild.marken, ausschnitt: bild.ausschnitt || 'fenster', rand: bild.rand })})`);
+  const markieren = () => auswerten(`${MARKIEREN}(${JSON.stringify({ marken: bild.marken, ausschnitt: bild.ausschnitt || 'fenster', rand: bild.rand })})`);
+  let { clip, inhaltUnten } = await markieren();
+  // Was unterhalb des Fensters liegt, zeichnet Chrome nur unvollständig: Beschriftungen von
+  // Knöpfen und ganze Zeilen fehlen dann im Bild, ohne dass etwas fehlschlägt. Reicht der
+  // Ausschnitt tiefer, wird das Fenster größer gemacht und noch einmal markiert.
+  const fenster = await auswerten('innerHeight');
+  if (inhaltUnten > fenster) {
+    await cdp('Emulation.setDeviceMetricsOverride', { width: bild.breite || 1440, height: Math.ceil(inhaltUnten) + 40, deviceScaleFactor: 1, mobile: false }, sessionId);
+    await pause(400);
+    ({ clip } = await markieren());
+  }
   await pause(150);
   const { data } = await cdp('Page.captureScreenshot', { format: 'png', clip: { ...clip, scale: 1 }, captureBeyondViewport: true }, sessionId);
   fs.writeFileSync(path.join(ZIEL, `${bild.name}.png`), Buffer.from(data, 'base64'));

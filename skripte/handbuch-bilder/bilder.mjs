@@ -54,11 +54,7 @@ export const BILDER = [
       liste.querySelector('a')?.classList.add('fundus-gewaehlt');
     `,
     suche: '/search?term=postfach',
-    marken: [
-      { nr: 1, ziel: '.fundus-suche-feld', seite: 'links-oben' },
-      { nr: 2, ziel: '.fundus-suche-treffer a.fundus-gewaehlt', seite: 'links-oben' },
-      { nr: 3, ziel: '.fundus-suche-fuss', seite: 'links-unten' },
-    ],
+    // Ohne Markierungen: Suchfeld, Treffer und Tastenleiste erklären sich im Bild von selbst.
     ausschnitt: '.fundus-suche', rand: 40,
   },
   {
@@ -151,7 +147,8 @@ export const BILDER = [
     name: 'thema-neuer-artikel', adresse: '/books/microsoft-365', person: 3, breite: 1440, hoehe: 820,
     marken: [
       { nr: 1, ziel: '.fundus-aktion.haupt', seite: 'links-oben' },
-      { nr: 2, ziel: '.book-contents > .chapter.entity-list-item', seite: 'links-oben' },
+      // Mittig und etwas nach außen: oben links lag die Marke auf dem Namen des Abschnitts.
+      { nr: 2, ziel: '.book-contents > .chapter.entity-list-item', seite: 'links', versatz: 16 },
     ],
     ausschnitt: '.fundus-aktionsleiste, main.content-wrap', rand: 24,
   },
@@ -192,7 +189,8 @@ export const BILDER = [
     name: 'rueckmeldungen-details', adresse: '/books/microsoft-365/page/freigegebenes-postfach-einrichten', person: 1, breite: 1440, hoehe: 900,
     beispielRueckmeldung: true,
     marken: [
-      { nr: 1, ziel: '.fundus-rueckmeldung-auswertung .zahlen', seite: 'links-oben' },
+      // Mittig an der Seite: oben lag die Marke auf der Überschrift „Rückmeldungen“.
+      { nr: 1, ziel: '.fundus-rueckmeldung-auswertung .zahlen', seite: 'links' },
       { nr: 2, ziel: '.fundus-rueckmeldung-auswertung .hinweise li', seite: 'links-oben' },
       { nr: 3, ziel: '.fundus-rueckmeldung-auswertung [data-erledigt]', seite: 'rechts-unten', abstand: 2 },
     ],
