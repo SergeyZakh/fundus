@@ -19,7 +19,7 @@ Schritt 9 ins Wiki einspielt.
 | Docker Desktop | <https://www.docker.com/products/docker-desktop/> |
 | Python 3.10 oder neuer | <https://www.python.org/downloads/> |
 | Das Fundus-Projekt als ZIP | [GitHub-Seite](https://github.com/SergeyZakh/fundus) → grüner Knopf **Code** → **Download ZIP** |
-| Eine Internetverbindung beim ersten Start | Docker lädt rund 10 GB (Programme und KI-Modelle) |
+| Eine Internetverbindung beim ersten Start | Docker lädt Programme und KI-Modelle; auf der Platte belegen sie danach rund 17 GB |
 
 Docker Desktop ist für Privatleute, Ausbildung und kleine Firmen kostenlos; größere Firmen brauchen
 eine Lizenz. Die genauen Grenzen stehen auf der Docker-Seite. Unter macOS und Linux geht es genauso;
@@ -66,7 +66,7 @@ sich eine Sicherung nicht zurückspielen.
 docker compose -p fundus -f docker-compose.yml -f docker-compose.lokal.yml up -d --build
 ```
 
-Beim ersten Mal lädt Docker rund 10 GB. Das dauert je nach Leitung 15 bis 45 Minuten. Die
+Beim ersten Mal lädt Docker mehrere Gigabyte; das dauert je nach Leitung 15 bis 45 Minuten. Die
 Befehlszeile kommt zurück, sobald alles gestartet ist; die KI-Modelle laden danach im Hintergrund
 weiter.
 
@@ -103,8 +103,13 @@ $env:BOOKSTACK_TOKEN_SECRET = "Token Kennwort hier einsetzen"
 python skripte\einrichten.py --beispiele
 ```
 
-Das legt Rollen, Bereiche, Themen, Vorlagen, das Handbuch und drei Beispielartikel an. Am Ende
-bittet das Skript um einen Handgriff, weil sich das Vorlagen-Häkchen nicht automatisch setzen lässt:
+Das legt Rollen, Bereiche, Themen, Vorlagen, das Handbuch und drei Beispielartikel an. **Rechne
+mit einer guten Viertelstunde**, in der nichts auf dem Bildschirm passiert: Das Skript legt jeden
+Artikel einzeln an, und die KI nimmt ihn gleich in ihren Index auf. Solange kein Fehler kommt,
+läuft es.
+
+Am Ende bittet das Skript um einen Handgriff, weil sich das Vorlagen-Häkchen nicht automatisch
+setzen lässt:
 
 1. Im Wiki das Thema **Vorlagen** öffnen.
 2. Jeden der genannten Artikel öffnen → **Bearbeiten** → rechts in der Seitenleiste **Vorlagen** →

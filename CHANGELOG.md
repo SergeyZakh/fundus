@@ -4,6 +4,10 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 
 ## Unveröffentlicht
 
+### Geändert
+
+- `docs/START.md`: Der Platzbedarf steht jetzt als gemessene Zahl (rund 17 GB auf der Platte statt „rund 10 GB Download“), und Schritt 9 nennt seine Laufzeit – das Einrichten dauert eine gute Viertelstunde, ohne dabei etwas auszugeben.
+
 ### Behoben
 
 - PDF-Bau: Hinweiskästen werden wieder unabhängig von der Schreibweise der Marke erkannt (`[!warning]` wie `[!WARNING]`)
