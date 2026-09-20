@@ -164,7 +164,7 @@ services:
   drawio:
     # Offizielles Image von JGraph. Die Diagramme selbst speichert BookStack
     # (als Bild mit eingebetteten Diagrammdaten), draw.io hält keine Daten.
-    image: jgraph/drawio:31.4.5
+    image: jgraph/drawio:31.4.6
     restart: unless-stopped
     # Der Browser lädt draw.io direkt, deshalb eine eigene Adresse über den Reverse Proxy
     # (Vorgabe 127.0.0.1:6876, nur für diesen Rechner).
