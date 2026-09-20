@@ -47,7 +47,7 @@ let html = marked.parse(md, { gfm: true });
 // Nur diese fünf Marken zeigt GitHub selbst als Kasten; hier werden sie auf die vier Stilarten
 // der PDF-Fassung abgebildet.
 const KASTEN = { note: 'info', tip: 'tipp', important: 'info', warning: 'achtung', caution: 'gefahr' };
-html = html.replace(/<blockquote>\s*<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<strong>([^<]*)<\/strong>)?([\s\S]*?)<\/blockquote>/g, (_, marke, titel, rest) => {
+html = html.replace(/<blockquote>\s*<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<strong>([^<]*)<\/strong>)?([\s\S]*?)<\/blockquote>/gi, (_, marke, titel, rest) => {
   rest = rest.trim().replace(/^<\/p>\s*/, '');
   const kopf = titel ? `<span class="titel">${titel}</span>` : '';
   return `<div class="kasten ${KASTEN[marke.toLowerCase()]}">${kopf}${rest.startsWith('<') ? rest : `<p>${rest}`}</div>`;

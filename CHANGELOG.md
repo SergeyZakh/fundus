@@ -2,6 +2,12 @@
 
 Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen nach [Semantic Versioning](https://semver.org/lang/de/).
 
+## Unveröffentlicht
+
+### Behoben
+
+- PDF-Bau: Hinweiskästen werden wieder unabhängig von der Schreibweise der Marke erkannt (`[!warning]` wie `[!WARNING]`)
+
 ## [1.0.0] – 2026-09-20
 
 Erste öffentliche Fassung.
