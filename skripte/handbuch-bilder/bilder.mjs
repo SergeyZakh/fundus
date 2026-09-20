@@ -107,10 +107,12 @@ export const BILDER = [
     vorbereiten: `document.querySelector('[data-fundus-ki-knopf]').click(); document.querySelector('[data-fundus-ki-knopf]').click();
       document.querySelector('.fundus-ki-quelle > button')?.click();`,
     marken: [
-      { nr: 1, ziel: '.fundus-ki-feld', seite: 'links-oben' },
-      { nr: 2, ziel: '.fundus-ki-ref', seite: 'rechts-oben', abstand: 3 },
-      { nr: 3, ziel: '.fundus-ki-quellen', seite: 'links-oben' },
-      { nr: 4, ziel: '[data-fundus-ki-gross]', seite: 'links-unten', abstand: 2 },
+      // Die Quellennummer ist nur 16 px groß: Marke daneben, sonst deckt sie die Nummer zu.
+      { nr: 1, ziel: '.fundus-ki-ref', seite: 'rechts', abstand: 3, versatz: 6 },
+      // Titel und erste Quelle: der Block selbst läuft unten leer weiter, und die zweite Quelle
+      // liegt im kleinen Fenster hinter dem Eingabefeld. Markiert wird, was man sieht.
+      { nr: 2, ziel: '.fundus-ki-quellen > *:nth-child(-n+2)', alle: true, seite: 'links-oben' },
+      { nr: 3, ziel: '[data-fundus-ki-gross]', seite: 'links-unten', abstand: 2 },
     ],
     ausschnitt: '.fundus-ki', rand: 14,
   },
@@ -119,7 +121,9 @@ export const BILDER = [
     speicher: chatSpeicher(true), chat: true, warten: 2200,
     vorbereiten: `document.querySelector('[data-fundus-ki-knopf]').click(); document.querySelector('[data-fundus-ki-knopf]').click();`,
     marken: [
-      { nr: 1, ziel: '.fundus-ki-archiv', seite: 'rechts-oben', abstand: -8 },
+      // Oben rechts lag die 1 unter der 2 der Mittelspalte (16 px auseinander). Unten ist die
+      // Spalte leer; „versatz“ rückt nur die Zahl nach innen, der Rahmen bleibt, wo er ist.
+      { nr: 1, ziel: '.fundus-ki-archiv', seite: 'rechts-unten', abstand: -8, versatz: -30 },
       { nr: 2, ziel: '.fundus-ki-mitte .fundus-ki-verlauf', seite: 'links-oben', abstand: -8 },
       { nr: 3, ziel: '.fundus-ki-fundus', seite: 'links-oben', abstand: -8 },
     ],

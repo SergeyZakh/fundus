@@ -43,10 +43,14 @@ if (kopfTreffer) {
 md = md.replace(/^<!--\s*neue Seite\s*-->$/gim, '<div class="neue-seite"></div>');
 let html = marked.parse(md, { gfm: true });
 
-// Hinweiskästen: > [!info] Titel
-html = html.replace(/<blockquote>\s*<p>\[!(info|tipp|achtung|gefahr)\][ \t]*([^\n<]*)\n?([\s\S]*?)<\/blockquote>/gi, (_, art, titel, rest) => {
+// Hinweiskästen in GitHubs Schreibweise: > [!CAUTION] allein in der Zeile, darunter > **Titel**.
+// Nur diese fünf Marken zeigt GitHub selbst als Kasten; hier werden sie auf die vier Stilarten
+// der PDF-Fassung abgebildet.
+const KASTEN = { note: 'info', tip: 'tipp', important: 'info', warning: 'achtung', caution: 'gefahr' };
+html = html.replace(/<blockquote>\s*<p>\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*(?:<strong>([^<]*)<\/strong>)?([\s\S]*?)<\/blockquote>/g, (_, marke, titel, rest) => {
   rest = rest.trim().replace(/^<\/p>\s*/, '');
-  return `<div class="kasten ${art.toLowerCase()}"><span class="titel">${titel}</span>${rest.startsWith('<') ? rest : `<p>${rest}`}</div>`;
+  const kopf = titel ? `<span class="titel">${titel}</span>` : '';
+  return `<div class="kasten ${KASTEN[marke.toLowerCase()]}">${kopf}${rest.startsWith('<') ? rest : `<p>${rest}`}</div>`;
 });
 
 // Bilder allein im Absatz: Alternativtext wird zur Bildunterschrift, Abbildungen werden durchgezählt.

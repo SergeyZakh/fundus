@@ -21,7 +21,8 @@ fakten:
   Anhang:          # Anhang: Titel    (Buchstabe statt Nummer)
   Neue Seite:      eine Zeile mit dem HTML-Kommentar „neue Seite“ vor dem Kapitel
   Einleitung:      der erste Absatz nach einem Kapitel erscheint grau
-  Hinweise:        > [!info] Titel · > [!tipp] Titel · > [!achtung] Titel · > [!gefahr] Titel
+  Hinweise:        > [!NOTE] / [!TIP] / [!WARNING] / [!CAUTION] in eigener Zeile,
+                   darunter > **Titel**, dann der Text (so zeigt GitHub sie als Kästen)
   Bilder:          ![Bildunterschrift](bilder/datei.svg)
   Aussehen:        docs/pdf-stil.css
 -->
@@ -76,10 +77,14 @@ Testkonten im lokalen Wiki: **1** Admin, **3** Mia (Mitarbeiter), **4** Alex (Az
 - **Rauchtest:** `node skripte/rauchtest.mjs vorher.json` vor, `… nachher.json` nach einer Änderung, dann vergleichen.
 - **Theme-Tests:** `bash skripte/testen.sh` prüft Rechte, Rückmeldungen, KI-Suche sowie Sicherung und Wiederherstellung in einem getrennten Teststapel (Kapitel „Stand und offene Punkte“).
 
-> [!gefahr] Im Container immer als abc arbeiten
+> [!CAUTION]
+> **Im Container immer als abc arbeiten**
+>
 > `docker exec` ohne `-u abc` legt Cache-Dateien als root an. Das Wiki kann sie danach nicht mehr beschreiben, einzelne Artikel liefern Fehler 500. Reparatur: Anhang B.
 
-> [!achtung] Theme-Änderungen sind sofort live
+> [!WARNING]
+> **Theme-Änderungen sind sofort live**
+>
 > Halb fertige Änderungen an `functions.php` oder Bausteinen werfen sofort Fehler im laufenden Wiki. Erst fertig schreiben, dann speichern.
 
 <!-- neue Seite -->
@@ -231,7 +236,9 @@ Artikel werden an Überschriften in Stücke zerlegt, als Vektoren in MariaDB ges
 | Anleitungen & Technik, Prozesse & Richtlinien | lesen und bearbeiten |
 | Ausbildung & interne Tools | nur lesen |
 
-> [!info] Was das Skript überschreibt
+> [!NOTE]
+> **Was das Skript überschreibt**
+>
 > Rollen und Bereichsrechte bei jedem Lauf. Themenrechte nur, wenn ein Thema noch keine eigenen hat, damit Einzelfreigaben erhalten bleiben. Inhalte werden nur angelegt, nie überschrieben.
 
 <!-- neue Seite -->
@@ -333,8 +340,11 @@ neu zu setzen), unter *Groups* die passende `wiki-…`-Gruppe, unter *Attributes
 `titel_stufe`. Alles gilt ab der nächsten Anmeldung. Wer geht, wird in Keycloak deaktiviert; das Konto
 im Wiki bleibt, damit Artikel ihren Autor behalten.
 
-> [!gefahr] Notfallzugang
+> [!CAUTION]
+> **Notfallzugang**
+>
 > Konten aus Keycloak haben im Wiki kein Passwort. Ist Keycloak weg oder falsch eingestellt, kommt niemand hinein.
+>
 > 1. In der `.env` `AUTH_METHOD=standard` setzen und `docker compose -p fundus up -d` ausführen.
 > 2. Lokales Admin-Konto anlegen: `docker exec -u abc -w /app/www <wiki-container> php artisan bookstack:create-admin --email=notfall@firma.intern --name=Notfall --generate-password`. Das Passwort steht in der Ausgabe.
 > 3. Anmelden, Fehler beheben, `AUTH_METHOD=oidc` zurück, `docker compose -p fundus up -d` und das Notfallkonto unter *Einstellungen → Benutzer* löschen.
@@ -385,7 +395,9 @@ Datensalat. Das Zugangspasswort in `SICHERUNG_KOPIE` ist dagegen nur verschleier
 verschlüsselt, und für alle mit Zugang zur `.env` auf dem Server lesbar. Für das Ziel deshalb ein eigenes Konto, das nur
 in diesen Ordner schreiben darf.
 
-> [!gefahr] Schlüssel sicher aufbewahren
+> [!CAUTION]
+> **Schlüssel sicher aufbewahren**
+>
 > Ohne `SICHERUNG_KOPIE_SCHLUESSEL` lässt sich die Kopie nie wieder lesen. In den Passwort-Manager und zusätzlich auf Papier an einen zweiten Ort. Ein neuer Schlüssel gilt nur für neue Kopien; alte bleiben mit dem alten lesbar.
 
 **Aus der Kopie wiederherstellen**, etwa nach dem Verlust des Servers: Stapel neu aufsetzen, dieselben
@@ -413,7 +425,9 @@ Zugangsdaten erscheinen weder im Protokoll noch im Status: rclone schreibt sie i
 `ohne_geheimnisse` in `sicherung.sh` ersetzt die ganze Zeichenkette durch „<Ziel>“, Passwörter, Schlüssel
 und Zugangsdaten in URLs durch „***“. Der Rechnername des Ziels bleibt stehen; er hilft bei der Fehlersuche.
 
-> [!info] Getestet
+> [!NOTE]
+> **Getestet**
+>
 > `bash skripte/testen.sh` spielt eine Sicherung in einen leeren Teststapel zurück und kopiert danach verschlüsselt auf ein WebDAV-Ziel im Teststapel: Auf dem Ziel sind keine Namen lesbar, die zurückgeholte Kopie besteht ihre Prüfsummen, ein ausgefallenes Ziel steht als Fehler im Status, ohne Zugangsdaten und Schlüssel. Auf dem Server einmal von Hand wiederholen.
 
 ## Handbuch pflegen

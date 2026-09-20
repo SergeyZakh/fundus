@@ -109,13 +109,14 @@ Prüfung wie beim Öffnen.
 > Erprobt ist die Anmeldung bisher **mit Keycloak**. Authentik und Entra ID sprechen dasselbe
 > Protokoll (OIDC), sind hier aber noch nicht durchgetestet.
 
-![Chatfenster von Fundus mit Frage, Antwort, Quellen und Eingabefeld](handbuch/bilder/fundus.png)
+Den Chat öffnet der runde Knopf mit dem **F** unten rechts.
 
-1. **Eingabefeld** – der runde Knopf mit dem **F** unten rechts öffnet den Chat.
-2. **Quellennummer** – jede Aussage trägt die Nummer der Stelle, aus der sie stammt.
-3. **Quellen** – ein Klick klappt das wörtliche Zitat auf, **Im Artikel ansehen** öffnet die
+![Chatfenster von Fundus mit Frage, Antwort und Quellen](handbuch/bilder/fundus.png)
+
+1. **Quellennummer** – jede Aussage trägt die Nummer der Stelle, aus der sie stammt.
+2. **Quellen** – ein Klick klappt das wörtliche Zitat auf, **Im Artikel ansehen** öffnet die
    Stelle.
-4. **Vollbild** – mit früheren Gesprächen und allen Quellen des Gesprächs.
+3. **Vollbild** – mit früheren Gesprächen und allen Quellen des Gesprächs.
 
 ![Schnellsuche mit Strg + K: Suchfeld, Treffer mit Textausschnitt, Tastenhinweise](handbuch/bilder/suche-strg-k.png)
 

@@ -84,6 +84,7 @@ const MARKIEREN = `(async (auftrag) => {
   const ebene = document.createElement('div');
   ebene.style.cssText = 'position:absolute;left:0;top:0;width:0;height:0;z-index:99999;pointer-events:none';
   document.body.append(ebene);
+  const gesetzt = [];
   for (const m of auftrag.marken || []) {
     const els = alle(m.ziel);
     if (!els.length) throw new Error('Markierung nicht gefunden: ' + m.ziel);
@@ -99,10 +100,22 @@ const MARKIEREN = `(async (auftrag) => {
     n.textContent = m.nr;
     n.style.cssText = 'position:absolute;width:26px;height:26px;border-radius:50%;background:#E8590C;color:#fff;font:700 14px/26px Instrument Sans,system-ui,sans-serif;text-align:center;box-shadow:0 0 0 3px #fff,0 2px 6px rgba(0,0,0,.25)';
     const seite = m.seite || 'links-oben';
-    const x = seite.includes('rechts') ? k.r + pad - 13 : k.x - pad - 13;
-    const y = seite.includes('unten') ? k.b + pad - 13 : k.y - pad - 13;
+    // Die Marke sitzt mittig auf der Ecke des Rahmens. Ist das Ziel kleiner als die Marke selbst
+    // (26 px) – eine Quellennummer im Text ist 16 px breit –, deckt sie genau das zu, was sie
+    // zeigen soll; dann rückt sie ganz daneben. Nennt „seite“ keine Richtung, wird auf dieser
+    // Achse mittig ausgerichtet.
+    const breit = k.r - k.x + pad * 2;
+    const hoch = k.b - k.y + pad * 2;
+    const versatzX = breit < 30 ? 26 : 13;
+    const versatzY = hoch < 30 ? 26 : 13;
+    const weg = m.versatz ?? 0;
+    const x = seite.includes('rechts') ? k.r + pad - 26 + versatzX + weg
+      : seite.includes('links') ? k.x - pad - versatzX - weg : (k.x + k.r) / 2 - 13;
+    const y = seite.includes('unten') ? k.b + pad - 26 + versatzY + weg
+      : seite.includes('oben') ? k.y - pad - versatzY - weg : (k.y + k.b) / 2 - 13;
     Object.assign(n.style, { left: x + scrollX + 'px', top: y + scrollY + 'px' });
     ebene.append(n);
+    gesetzt.push({ x: x + scrollX, y: y + scrollY });
   }
   let clip;
   if (auftrag.ausschnitt === 'fenster') {
@@ -113,6 +126,18 @@ const MARKIEREN = `(async (auftrag) => {
     const k = rahmen(treffer);
     const rand = auftrag.rand ?? 24;
     clip = { x: Math.max(0, k.x - rand + scrollX), y: Math.max(0, k.y - rand + scrollY), width: k.r - k.x + rand * 2, height: k.b - k.y + rand * 2 };
+  }
+  // Eine Marke am äußeren Rand des Ausschnitts fiele sonst aus dem Bild: Ausschnitt so weit
+  // ziehen, dass jede gesetzte Marke vollständig darin liegt – mit demselben Rand wie das Bild
+  // selbst, sonst klebt sie an der Kante.
+  const luft = auftrag.rand ?? 24;
+  for (const p of gesetzt) {
+    const rechts = Math.max(clip.x + clip.width, p.x + 26 + luft);
+    const unten = Math.max(clip.y + clip.height, p.y + 26 + luft);
+    clip.x = Math.max(0, Math.min(clip.x, p.x - luft));
+    clip.y = Math.max(0, Math.min(clip.y, p.y - luft));
+    clip.width = rechts - clip.x;
+    clip.height = unten - clip.y;
   }
   return clip;
 })`;
