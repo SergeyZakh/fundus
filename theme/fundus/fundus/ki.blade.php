@@ -68,7 +68,7 @@
                             <svg class="stopp" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="2" fill="currentColor"/></svg>
                         </button>
                     </div>
-                    <p class="fundus-ki-fuss">Läuft auf unserem Server. Antworten können Fehler enthalten, prüf die Quelle.</p>
+                    <p class="fundus-ki-fuss">Antworten können Fehler enthalten, prüf die Quelle.</p>
                 </form>
             </div>
 
