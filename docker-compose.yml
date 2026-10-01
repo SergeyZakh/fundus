@@ -20,7 +20,7 @@ services:
     # Community-Image von linuxserver.io; BookStack selbst bietet kein offizielles
     # Image an. Die Version ist fest, damit ein Update eine bewusste Änderung ist
     # (Ablauf in docs/ENTWICKLUNG.md, Kapitel „Update“).
-    image: lscr.io/linuxserver/bookstack:26.05.5
+    image: lscr.io/linuxserver/bookstack:26.09.1
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -267,7 +267,7 @@ services:
     # Sprachmodell für den KI-Chat. Kein Port nach außen: Nur das Wiki fragt es im Container-Netz.
     # Wer ein vorhandenes Ollama (etwa auf einem Rechner mit Grafikkarte) nutzt, setzt OLLAMA_URL
     # auf dessen Adresse und entfernt diesen Dienst und ollama-modelle in seinem Fork.
-    image: ollama/ollama:0.34.2
+    image: ollama/ollama:0.34.4
     restart: unless-stopped
     expose:
       - "11434"
@@ -307,7 +307,7 @@ services:
   ollama-modelle:
     # Lädt Sprach- und Einbettungsmodell beim Start in das Volume (von ollama.com) und beendet sich.
     # Sind sie schon da, prüft der Aufruf nur kurz auf eine neuere Fassung.
-    image: ollama/ollama:0.34.2
+    image: ollama/ollama:0.34.4
     restart: "no"
     depends_on:
       ollama:
