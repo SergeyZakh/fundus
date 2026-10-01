@@ -8,79 +8,20 @@
 // Aufruf (Wiki lokal auf http://localhost:6875, Stapel „fundus“ läuft):
 //   node skripte/handbuch-bilder/aufnehmen.mjs            alle Bilder
 //   node skripte/handbuch-bilder/aufnehmen.mjs artikel    nur Bilder, deren Name „artikel“ enthält
-import { spawn, execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BILDER, CHAT_SKRIPTE, MIA } from './bilder.mjs';
-import { chromePfad } from '../chrome.mjs';
+import { wikiImContainer, chromeStarten, pause } from '../wiki-browser.mjs';
 
 const HIER = path.dirname(fileURLToPath(import.meta.url));
 const ZIEL = path.resolve(HIER, '../../handbuch/bilder');
-const TEMP = fs.mkdtempSync(path.join(os.tmpdir(), 'fundus-handbuch-'));
-const CONTAINER = process.env.WIKI_CONTAINER || 'fundus-wiki-1';
-const CHROME = chromePfad();
 const filter = process.argv[2] || '';
 
-// Seite im Container rendern: eigenes Mini-Skript, das eine Anfrage als Person X (Kennung oder E-Mail) durch
-// BookStack schickt. Fehlt das Konto oder antwortet die Seite nicht mit 200, bricht es ab, statt die Anmeldeseite
-// aufzunehmen.
-const RENDER = `<?php
-require '/app/www/vendor/autoload.php';
-$app = require '/app/www/bootstrap/app.php';
-$kernel = $app->make(Illuminate\\Contracts\\Http\\Kernel::class);
-$req = Illuminate\\Http\\Request::create($argv[1], 'GET');
-$app->instance('request', $req);
-$app->make(Illuminate\\Contracts\\Console\\Kernel::class)->bootstrap();
-$konten = BookStack\\Users\\Models\\User::query();
-$konto = ctype_digit($argv[2]) ? $konten->find((int) $argv[2]) : $konten->where('email', $argv[2])->first();
-if (!$konto) {
-    fwrite(STDERR, "Konto {$argv[2]} fehlt; einmal python skripte/einrichten.py --beispiele laufen lassen.\\n");
-    exit(3);
-}
-auth()->login($konto);
-$antwort = $kernel->handle($req);
-if ($antwort->getStatusCode() !== 200) {
-    fwrite(STDERR, "{$argv[1]} antwortet {$antwort->getStatusCode()} für {$argv[2]}.\\n");
-    exit(4);
-}
-echo $antwort->getContent();
-`;
-fs.writeFileSync(path.join(TEMP, 'render.php'), RENDER);
-execFileSync('docker', ['cp', path.join(TEMP, 'render.php'), `${CONTAINER}:/tmp/fundus-render.php`]);
-// Immer als abc (Benutzer des Webservers): Als root angelegte Cache-Ordner kann das Wiki später nicht beschreiben.
-const rendern = (adresse, person) => execFileSync('docker', ['exec', '-u', 'abc', '-w', '/app/www', CONTAINER, 'php', '/tmp/fundus-render.php', adresse, String(person)], {
-  maxBuffer: 64 * 1024 * 1024, env: { ...process.env, MSYS_NO_PATHCONV: '1' },
-}).toString();
-
-// ---------- Chrome über das DevTools-Protokoll ----------
-const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--remote-debugging-port=0',
-  '--disable-web-security', '--allow-file-access-from-files', `--user-data-dir=${path.join(TEMP, 'profil')}`, 'about:blank']);
-const wsUrl = await new Promise((ok) => chrome.stderr.on('data', (d) => { const m = String(d).match(/ws:\/\/\S+/); if (m) ok(m[0]); }));
-const ws = new WebSocket(wsUrl);
-await new Promise((ok) => ws.addEventListener('open', ok));
-let nr = 0;
-const warten = new Map();
-const ereignisse = [];
-ws.addEventListener('message', (e) => {
-  const m = JSON.parse(e.data);
-  if (m.id && warten.has(m.id)) { warten.get(m.id)(m); warten.delete(m.id); } else ereignisse.push(m);
-});
-const cdp = (method, params = {}, sessionId) => new Promise((ok, fehler) => {
-  const id = ++nr;
-  warten.set(id, (m) => (m.error ? fehler(new Error(`${method}: ${m.error.message}`)) : ok(m.result)));
-  ws.send(JSON.stringify({ id, method, params, sessionId }));
-});
-const { targetInfos } = await cdp('Target.getTargets');
-const { sessionId } = await cdp('Target.attachToTarget', { targetId: targetInfos.find((t) => t.type === 'page').targetId, flatten: true });
-await cdp('Page.enable', {}, sessionId);
-const auswerten = async (code) => {
-  const r = await cdp('Runtime.evaluate', { expression: code, awaitPromise: true, returnByValue: true }, sessionId);
-  if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text);
-  return r.result.value;
-};
-const pause = (ms) => new Promise((ok) => setTimeout(ok, ms));
+// Seiten im Container als Person rendern und in headless Chrome öffnen (skripte/wiki-browser.mjs).
+const wiki = wikiImContainer('handbuch');
+const chrome = await chromeStarten({ profil: path.join(wiki.temp, 'profil') });
+const { cdp, auswerten } = chrome;
 
 // Markierungen und Ausschnitt im Browser berechnen und zeichnen.
 const MARKIEREN = `(async (auftrag) => {
@@ -189,11 +130,8 @@ if ($argv[1] === 'anlegen') {
     $t->where('page_id', $seite->id)->where(fn ($q) => $q->where('text', 'fundus-handbuch-beispiel')->orWhere('text', 'like', 'Der Screenshot zu Schritt 1 zeigt noch das alte Admin Center.'))->delete();
 }
 `;
-fs.writeFileSync(path.join(TEMP, 'beispiel.php'), BEISPIEL_RUECKMELDUNG);
-execFileSync('docker', ['cp', path.join(TEMP, 'beispiel.php'), `${CONTAINER}:/tmp/fundus-beispiel.php`]);
-const beispiel = (aktion, adresse) => execFileSync('docker', ['exec', '-u', 'abc', '-w', '/app/www', CONTAINER, 'php', '/tmp/fundus-beispiel.php', aktion, adresse.split('/').pop()], {
-  env: { ...process.env, MSYS_NO_PATHCONV: '1' },
-});
+const beispielSkript = wiki.ablegen('beispiel', BEISPIEL_RUECKMELDUNG);
+const beispiel = (aktion, adresse) => wiki.php(beispielSkript, aktion, adresse.split('/').pop());
 
 let fertig = 0;
 // Ein kaputtes Bild (Markierung fehlt nach einem Umbau, Seite fehlt) bricht nicht den ganzen Lauf ab:
@@ -214,21 +152,21 @@ async function aufnehmen(bild) {
   if (bild.beispielRueckmeldung) beispiel('anlegen', bild.adresse);
   let html;
   try {
-    html = rendern(bild.adresse, bild.person ?? MIA);
+    html = wiki.rendern(bild.adresse, bild.person ?? MIA);
   } finally {
     if (bild.beispielRueckmeldung) beispiel('loeschen', bild.adresse);
   }
   if (bild.suche) {
-    const treffer = rendern(bild.suche, bild.person ?? MIA);
+    const treffer = wiki.rendern(bild.suche, bild.person ?? MIA);
     html = html.replace('<head>', `<head><script>window.__suche = ${JSON.stringify(treffer).replace(/</g, '\\u003c')};</script>`);
   }
-  const datei = path.join(TEMP, `${bild.name}.html`);
+  const datei = path.join(wiki.temp, `${bild.name}.html`);
   // Vor allen Skripten: gespeicherte Zustände (Chat, Seitenleisten) setzen, falls das Bild sie braucht.
   const vorher = `<script>try{localStorage.clear();sessionStorage.clear();${bild.speicher || ''}}catch(e){}</script>`;
   const chatSkripte = bild.chat ? CHAT_SKRIPTE.map((src) => `<script src="${src}"></script>`).join('') : '';
   fs.writeFileSync(datei, html.replace('<head>', `<head>${vorher}${chatSkripte}`));
-  await cdp('Emulation.setDeviceMetricsOverride', { width: bild.breite || 1440, height: bild.hoehe || 900, deviceScaleFactor: 1, mobile: false }, sessionId);
-  await cdp('Page.navigate', { url: `file:///${datei.replace(/\\/g, '/')}` }, sessionId);
+  await chrome.fenster(bild.breite || 1440, bild.hoehe || 900);
+  await chrome.oeffnen(datei);
   await pause(bild.warten || 1800);
   await auswerten(`document.fonts.ready.then(() => true)`);
   if (bild.vorbereiten) await auswerten(`(async () => { ${bild.vorbereiten} })()`);
@@ -240,12 +178,12 @@ async function aufnehmen(bild) {
   // Ausschnitt tiefer, wird das Fenster größer gemacht und noch einmal markiert.
   const fenster = await auswerten('innerHeight');
   if (inhaltUnten > fenster) {
-    await cdp('Emulation.setDeviceMetricsOverride', { width: bild.breite || 1440, height: Math.ceil(inhaltUnten) + 40, deviceScaleFactor: 1, mobile: false }, sessionId);
+    await chrome.fenster(bild.breite || 1440, Math.ceil(inhaltUnten) + 40);
     await pause(400);
     ({ clip } = await markieren());
   }
   await pause(150);
-  const { data } = await cdp('Page.captureScreenshot', { format: 'png', clip: { ...clip, scale: 1 }, captureBeyondViewport: true }, sessionId);
+  const { data } = await cdp('Page.captureScreenshot', { format: 'png', clip: { ...clip, scale: 1 }, captureBeyondViewport: true });
   fs.writeFileSync(path.join(ZIEL, `${bild.name}.png`), Buffer.from(data, 'base64'));
   console.log(`✓ ${bild.name}.png  ${Math.round(clip.width)}×${Math.round(clip.height)}`);
 }
@@ -254,9 +192,6 @@ if (fehler.length) {
   console.log(`${fehler.length} fehlgeschlagen:`);
   for (const [name, grund] of fehler) console.log(`  ${name}: ${grund}`);
 }
-ws.close();
-chrome.kill();
-// Chrome gibt das Profil erst kurz nach dem Beenden frei.
-await pause(1500);
-try { fs.rmSync(TEMP, { recursive: true, force: true }); } catch (e) { /* Reste im Temp-Ordner sind harmlos */ }
+await chrome.beenden();
+wiki.aufraeumen();
 process.exit(fehler.length ? 1 : 0);

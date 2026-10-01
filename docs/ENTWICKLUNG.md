@@ -114,6 +114,7 @@ fundus/
 ├── ocr/, sicherung/          eigene Images für Texterkennung und Sicherung
 ├── keycloak/                 Realm-Vorlage
 ├── skripte/                  Einrichtung, .env, Sicherung, Handbuch, Rauchtest
+│   ├── wiki-browser.mjs      Seite als Person rendern, headless Chrome steuern
 │   └── testen.sh, tests/     Theme-Tests mit Sicherung und Wiederherstellung
 ├── handbuch/, vorlagen/      Inhalte, die ins Wiki eingespielt werden
 ├── .github/                  Prüfungen (Actions), Dependabot, Vorlagen für Issues

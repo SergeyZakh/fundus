@@ -8,19 +8,15 @@
 // Aufruf (Wiki lokal auf http://localhost:6875, Stapel „fundus“ läuft, einrichten.py --beispiele gelaufen):
 //   node skripte/vorstellung/bauen.mjs        alle Folien und das PDF
 //   node skripte/vorstellung/bauen.mjs 3      nur Folie 3 (kein PDF)
-import { spawn, execFileSync } from 'node:child_process';
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { CHAT_SKRIPTE } from '../handbuch-bilder/bilder.mjs';
-import { chromePfad } from '../chrome.mjs';
+import { wikiImContainer, chromeStarten, pause } from '../wiki-browser.mjs';
 
 const HIER = path.dirname(fileURLToPath(import.meta.url));
 const ZIEL = path.resolve(HIER, '../../docs/vorstellung');
 const SCHRIFT = pathToFileURL(path.resolve(HIER, '../../theme/fundus/public/fonts/instrument-sans-latin.woff2')).href;
-const TEMP = fs.mkdtempSync(path.join(os.tmpdir(), 'fundus-vorstellung-'));
-const CONTAINER = process.env.WIKI_CONTAINER || 'fundus-wiki-1';
 const nurFolie = Number(process.argv[2]) || 0;
 fs.mkdirSync(ZIEL, { recursive: true });
 
@@ -30,30 +26,7 @@ const ALEX = 'azubi@firma.intern';
 const ARTIKEL = '/books/microsoft-365/page/freigegebenes-postfach-einrichten';
 const REPO = 'github.com/SergeyZakh/fundus';
 
-// ---------- Seite im Container als Person rendern ----------
-// Wie in aufnehmen.mjs, dazu der Accept-Kopf als drittes Argument: Die Hinweise antworten mit JSON.
-const RENDER = `<?php
-require '/app/www/vendor/autoload.php';
-$app = require '/app/www/bootstrap/app.php';
-$kernel = $app->make(Illuminate\\Contracts\\Http\\Kernel::class);
-$req = Illuminate\\Http\\Request::create($argv[1], 'GET');
-$req->headers->set('Accept', $argv[3] ?? 'text/html');
-$app->instance('request', $req);
-$app->make(Illuminate\\Contracts\\Console\\Kernel::class)->bootstrap();
-$konten = BookStack\\Users\\Models\\User::query();
-$konto = ctype_digit($argv[2]) ? $konten->find((int) $argv[2]) : $konten->where('email', $argv[2])->first();
-if (!$konto) {
-    fwrite(STDERR, "Konto {$argv[2]} fehlt; einmal python skripte/einrichten.py --beispiele laufen lassen.\\n");
-    exit(3);
-}
-auth()->login($konto);
-$antwort = $kernel->handle($req);
-if ($antwort->getStatusCode() !== 200) {
-    fwrite(STDERR, "{$argv[1]} antwortet {$antwort->getStatusCode()} für {$argv[2]}.\\n");
-    exit(4);
-}
-echo $antwort->getContent();
-`;
+// ---------- Seite im Container als Person rendern (skripte/wiki-browser.mjs) ----------
 // Beispieldaten, die nur während einer Aufnahme im Wiki stehen:
 //   rueckmeldung / rueckmeldung-weg  eine offene Rückmeldung von Alex, damit der Admin einen Hinweis bekommt
 //   gelesen / gelesen-weg            gelesene Artikel für Mia an Werktagen der letzten Monate, damit ihre Aktivität
@@ -101,16 +74,10 @@ switch ($argv[1]) {
         break;
 }
 `;
-fs.writeFileSync(path.join(TEMP, 'render.php'), RENDER);
-fs.writeFileSync(path.join(TEMP, 'beispiel.php'), BEISPIEL);
-execFileSync('docker', ['cp', path.join(TEMP, 'render.php'), `${CONTAINER}:/tmp/fundus-vorstellung.php`]);
-execFileSync('docker', ['cp', path.join(TEMP, 'beispiel.php'), `${CONTAINER}:/tmp/fundus-vorstellung-beispiel.php`]);
-// Immer als abc (Benutzer des Webservers): Als root angelegte Cache-Ordner kann das Wiki später nicht beschreiben.
-const imContainer = (...args) => execFileSync('docker', ['exec', '-u', 'abc', '-w', '/app/www', CONTAINER, 'php', ...args], {
-  maxBuffer: 64 * 1024 * 1024, env: { ...process.env, MSYS_NO_PATHCONV: '1' },
-}).toString();
-const rendern = (adresse, person, accept) => imContainer('/tmp/fundus-vorstellung.php', adresse, String(person), accept || 'text/html');
-const beispiel = (aktion) => imContainer('/tmp/fundus-vorstellung-beispiel.php', aktion, ARTIKEL.split('/').pop());
+const wiki = wikiImContainer('vorstellung');
+const beispielSkript = wiki.ablegen('beispiel', BEISPIEL);
+const rendern = (adresse, person, accept) => wiki.rendern(adresse, person, accept || 'text/html');
+const beispiel = (aktion) => wiki.php(beispielSkript, aktion, ARTIKEL.split('/').pop());
 // Beispieldaten anlegen, aufnehmen, in jedem Fall wieder entfernen.
 const mitBeispiel = async (art, aufnahme) => {
   beispiel(art);
@@ -118,34 +85,11 @@ const mitBeispiel = async (art, aufnahme) => {
 };
 
 // ---------- Chrome über das DevTools-Protokoll ----------
-const chrome = spawn(chromePfad(), ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--remote-debugging-port=0',
-  '--disable-web-security', '--allow-file-access-from-files', `--user-data-dir=${path.join(TEMP, 'profil')}`, 'about:blank']);
-const wsUrl = await new Promise((ok) => chrome.stderr.on('data', (d) => { const m = String(d).match(/ws:\/\/\S+/); if (m) ok(m[0]); }));
-const ws = new WebSocket(wsUrl);
-await new Promise((ok) => ws.addEventListener('open', ok));
-let nr = 0;
-const warten = new Map();
-ws.addEventListener('message', (e) => {
-  const m = JSON.parse(e.data);
-  if (m.id && warten.has(m.id)) { warten.get(m.id)(m); warten.delete(m.id); }
-});
-const cdp = (method, params = {}, sessionId) => new Promise((ok, fehler) => {
-  const id = ++nr;
-  warten.set(id, (m) => (m.error ? fehler(new Error(`${method}: ${m.error.message}`)) : ok(m.result)));
-  ws.send(JSON.stringify({ id, method, params, sessionId }));
-});
-const { targetInfos } = await cdp('Target.getTargets');
-const { sessionId } = await cdp('Target.attachToTarget', { targetId: targetInfos.find((t) => t.type === 'page').targetId, flatten: true });
-await cdp('Page.enable', {}, sessionId);
-const auswerten = async (code) => {
-  const r = await cdp('Runtime.evaluate', { expression: code, awaitPromise: true, returnByValue: true }, sessionId);
-  if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description || r.exceptionDetails.text);
-  return r.result.value;
-};
-const pause = (ms) => new Promise((ok) => setTimeout(ok, ms));
+const chrome = await chromeStarten({ profil: path.join(wiki.temp, 'profil') });
+const { cdp, auswerten } = chrome;
 const oeffnen = async (datei, breite, hoehe, dichte, mobil = false) => {
-  await cdp('Emulation.setDeviceMetricsOverride', { width: breite, height: hoehe, deviceScaleFactor: dichte, mobile: mobil }, sessionId);
-  await cdp('Page.navigate', { url: pathToFileURL(datei).href }, sessionId);
+  await chrome.fenster(breite, hoehe, dichte, mobil);
+  await chrome.oeffnen(datei);
 };
 
 // ---------- Aufnahme einer Wiki-Seite ----------
@@ -171,7 +115,7 @@ async function aufnehmen(a) {
     // Nach oben und der Sprunglink für Tastatur sind keine Inhalte; der Sprunglink blitzte beim Scrollen auf.
     + '<style>.back-to-top, .skip-to-content-link { display: none !important; }</style>';
   const chatSkripte = a.chat ? CHAT_SKRIPTE.map((src) => `<script src="${src}"></script>`).join('') : '';
-  const datei = path.join(TEMP, 'seite.html');
+  const datei = path.join(wiki.temp, 'seite.html');
   fs.writeFileSync(datei, html.replace('<head>', `<head>${vorher}${chatSkripte}`));
   await oeffnen(datei, a.breite || 1440, a.hoehe || 900, 2, !!a.mobil);
   await pause(a.chat ? 2400 : 1800);
@@ -179,7 +123,7 @@ async function aufnehmen(a) {
   if (a.vorbereiten) await auswerten(`(async () => { ${a.vorbereiten} })()`);
   await pause(500);
   if (!a.ausschnitt || a.ausschnitt === 'fenster') {
-    const { data } = await cdp('Page.captureScreenshot', { format: 'png' }, sessionId);
+    const { data } = await cdp('Page.captureScreenshot', { format: 'png' });
     return Buffer.from(data, 'base64');
   }
   const clip = await auswerten(`(() => {
@@ -190,7 +134,7 @@ async function aufnehmen(a) {
     const x = Math.max(0, Math.min(...r.map((k) => k.left)) - rand), y = Math.min(...r.map((k) => k.top)) - rand;
     return { x: x + scrollX, y: Math.max(0, y + scrollY), width: Math.max(...r.map((k) => k.right)) + rand - x, height: Math.max(...r.map((k) => k.bottom)) + rand - y, scale: 1 };
   })()`);
-  const { data } = await cdp('Page.captureScreenshot', { format: 'png', clip, captureBeyondViewport: true }, sessionId);
+  const { data } = await cdp('Page.captureScreenshot', { format: 'png', clip, captureBeyondViewport: true });
   return Buffer.from(data, 'base64');
 }
 const bild = (puffer, klasse = '') => `<img class="${klasse}" src="data:image/png;base64,${puffer.toString('base64')}" alt="">`;
@@ -357,14 +301,14 @@ for (const [i, folie] of FOLIEN.entries()) {
   if (nurFolie && n !== nurFolie) continue;
   try {
     const buehne = await folie.buehne();
-    const datei = path.join(TEMP, `folie-${n}.html`);
+    const datei = path.join(wiki.temp, `folie-${n}.html`);
     fs.writeFileSync(datei, folieHtml(folie.titel, buehne, n, FOLIEN.length));
     await oeffnen(datei, 1600, 2000, 1);
     await pause(600);
     await auswerten('document.fonts.ready.then(() => true)');
     // Ohne die Schrift fiele die Folie still auf eine Systemschrift zurück.
     if (!await auswerten(`document.fonts.load("600 124px 'Instrument Sans'").then((f) => f.length > 0)`)) throw new Error('Instrument Sans nicht geladen');
-    const { data } = await cdp('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1600, height: 2000, scale: 1 } }, sessionId);
+    const { data } = await cdp('Page.captureScreenshot', { format: 'png', clip: { x: 0, y: 0, width: 1600, height: 2000, scale: 1 } });
     const ziel = path.join(ZIEL, `folie-${n}.png`);
     fs.writeFileSync(ziel, Buffer.from(data, 'base64'));
     fertig.push(ziel);
@@ -378,22 +322,19 @@ for (const [i, folie] of FOLIEN.entries()) {
 // Alle Folien als PDF, je Folie eine Seite im selben Format. Nur bei einem vollständigen Lauf.
 if (!nurFolie && !fehler.length) {
   const seiten = fertig.map((f) => `<img src="${pathToFileURL(f).href}">`).join('');
-  const datei = path.join(TEMP, 'pdf.html');
+  const datei = path.join(wiki.temp, 'pdf.html');
   fs.writeFileSync(datei, `<!doctype html><html><head><meta charset="utf-8"><style>
     @page { size: 1600px 2000px; margin: 0; } * { margin: 0; } img { display: block; width: 1600px; height: 2000px; break-after: page; }
   </style></head><body>${seiten}</body></html>`);
   await oeffnen(datei, 1600, 2000, 1);
   await pause(800);
-  const { data } = await cdp('Page.printToPDF', { printBackground: true, preferCSSPageSize: true, marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 }, sessionId);
+  const { data } = await cdp('Page.printToPDF', { printBackground: true, preferCSSPageSize: true, marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0 });
   const pdf = path.join(ZIEL, 'fundus-vorstellung.pdf');
   fs.writeFileSync(pdf, Buffer.from(data, 'base64'));
   console.log(`✓ fundus-vorstellung.pdf  ${Math.round(fs.statSync(pdf).size / 1024)} KB`);
 }
 
 console.log(`\n${fertig.length} Folien in ${ZIEL}`);
-ws.close();
-chrome.kill();
-execFileSync('docker', ['exec', CONTAINER, 'rm', '-f', '/tmp/fundus-vorstellung.php', '/tmp/fundus-vorstellung-beispiel.php']);
-await pause(1500); // Chrome gibt das Profil erst kurz nach dem Beenden frei
-try { fs.rmSync(TEMP, { recursive: true, force: true }); } catch (e) { /* Reste im Temp-Ordner sind harmlos */ }
+await chrome.beenden();
+wiki.aufraeumen();
 process.exit(fehler.length ? 1 : 0);

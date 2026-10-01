@@ -21,6 +21,9 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 ### Geändert
 
 - Ollama 0.34.4 (vorher 0.34.2).
+- Rauchtest, Handbuch-Bilder und Vorstellungsbilder steuern Chrome über ein gemeinsames Modul
+  `skripte/wiki-browser.mjs` statt über drei fast gleiche Kopien. Ihre Hilfsskripte im Wiki-Container
+  räumen jetzt alle drei wieder ab.
 
 ### Behoben
 
