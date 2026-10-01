@@ -16,12 +16,15 @@
             return $svg !== '' ? $svg : (new \BookStack\Util\SvgIcon($ersatz))->toHtml();
         };
         $proRegal = 9;
+        // Gäste bei öffentlichem Zugriff: keine Begrüßung mit Namen („Guest“), kein Aktivitätsraster und keine
+        // persönlichen Kästen. Bereiche, „Zuletzt geändert“ und „Häufig gebraucht“ bleiben.
+        $gast = user()->isGuest();
     @endphp
     @push('body-class', 'fundus-start ')
 
     <div class="fundus-start-kopf">
         <div>
-            <h1>Hallo {{ $vorname }}</h1>
+            <h1>{{ $gast ? 'Willkommen' : 'Hallo ' . $vorname }}</h1>
             <p>Willkommen in {{ setting('app-name') }}: Anleitungen, Abläufe und Wissen an einem Ort.</p>
         </div>
         <button type="button" class="fundus-grosse-suche" data-fundus-suche-oeffnen>
@@ -31,7 +34,9 @@
         </button>
     </div>
 
-    @include('fundus.aktivitaet')
+    @unless($gast)
+        @include('fundus.aktivitaet')
+    @endunless
 
     <div class="fundus-start-raster">
         <div class="fundus-start-regale">
@@ -51,7 +56,7 @@
                     @if($buecher->count())
                         <ul class="fundus-buecher">
                             @foreach($buecher->take($proRegal) as $buch)
-                                @php($seiten = $buch->pages()->scopes('visible')->where('draft', false)->count())
+                                @php($seiten = $buch->pages()->scopes('visible')->where('draft', false)->where('template', false)->count())
                                 <li>
                                     <a href="{{ $buch->getUrl('?shelf=' . $shelf->id) }}" class="fundus-buch">
                                         <span class="fundus-kreis klein" aria-hidden="true">{!! $symbol($buch, 'book') !!}</span>
@@ -97,7 +102,7 @@
                 </section>
             @endif
             {{-- Artikel, die ich verantworte und die zur Prüfung anstehen (pruefung/Pruefung.php). Leer: kein Kasten. --}}
-            @php($anstehend = \FundusPruefung\Pruefung::anstehendFuer(user()->id))
+            @php($anstehend = $gast ? collect() : \FundusPruefung\Pruefung::anstehendFuer(user()->id))
             @if($anstehend->isNotEmpty())
                 <section class="fundus-liste fundus-zu-pruefen" aria-labelledby="fundus-zu-pruefen">
                     <h2 id="fundus-zu-pruefen">Zu prüfen <span class="anzahl">{{ $anstehend->count() }}</span></h2>
@@ -121,7 +126,7 @@
                 </section>
             @endif
             {{-- Offene Hinweise „veraltet/falsch“ zu Artikeln, die ich verantworte (hinweise/Hinweise.php). --}}
-            @php($offeneHinweise = \FundusHinweise\Hinweise::rueckmeldungen(user()->id))
+            @php($offeneHinweise = $gast ? [] : \FundusHinweise\Hinweise::rueckmeldungen(user()->id))
             @if($offeneHinweise)
                 <section class="fundus-liste fundus-zu-pruefen" aria-labelledby="fundus-offene-hinweise">
                     <h2 id="fundus-offene-hinweise">Offene Hinweise <span class="anzahl">{{ count($offeneHinweise) }}</span></h2>

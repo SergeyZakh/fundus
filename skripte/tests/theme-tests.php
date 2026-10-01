@@ -270,6 +270,28 @@ test('Gäste sehen bei öffentlichem Zugriff weder KI-Chat noch Hinweise', funct
         ? true : 'Chat oder Hinweise im HTML für Gäste';
 });
 
+test('Gäste bekommen bei öffentlichem Zugriff weder Personenliste noch persönliche Startseite', function () {
+    $seite = gastAufruf('/', true);
+    $mitarbeiterin = aufruf('/', MITARBEITER)['html'];
+    if (!str_contains($mitarbeiterin, 'id="fundus-personen"') || !str_contains($mitarbeiterin, 'fundus-aktivitaet')) {
+        return 'Gegenprobe: Mitarbeiterin bekommt Personenliste oder Aktivitätsraster nicht';
+    }
+    $falsch = [];
+    if (str_contains($seite['html'], 'id="fundus-personen"')) {
+        $falsch[] = 'Personenliste';
+    }
+    if (str_contains($seite['html'], 'Mia Mitarbeiterin')) {
+        $falsch[] = 'Name eines Kontos';
+    }
+    if (str_contains($seite['html'], 'class="fundus-aktivitaet"')) {
+        $falsch[] = 'Aktivitätsraster';
+    }
+    if (preg_match('/<h1>\s*Hallo/', $seite['html'])) {
+        $falsch[] = 'Begrüßung mit Namen';
+    }
+    return $falsch ? 'Für Gäste im HTML: ' . implode(', ', $falsch) : true;
+});
+
 // ---------------------------------------------------------------------------
 abschnitt('Rechte: Seiten');
 // ---------------------------------------------------------------------------

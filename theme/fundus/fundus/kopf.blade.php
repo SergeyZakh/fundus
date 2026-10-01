@@ -22,8 +22,9 @@
   setTimeout(function () { h.classList.remove('fundus-laedt'); }, 2500);
 })();</script>
 {{-- Personen für Profilbilder und Titel neben Namen (wiki.js: personenSchmuecken). Nur Name, Profiladresse,
-     hochgeladenes Bild und Titel (aus dem Anmeldedienst, sonst theme/fundus/titel.php), keine E-Mail-Adressen. --}}
-@if(user()->hasAppAccess())
+     hochgeladenes Bild und Titel (aus dem Anmeldedienst, sonst theme/fundus/titel.php), keine E-Mail-Adressen.
+     Nicht für Gäste bei öffentlichem Zugriff: Die Liste nennt alle Konten, auch solche ohne Artikel. --}}
+@if(user()->hasAppAccess() && !user()->isGuest())
     @php
         $konten = \BookStack\Users\Models\User::query()->whereNull('system_name')->limit(1000)
             ->get(['id', 'name', 'slug', 'email', 'image_id']);
