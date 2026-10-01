@@ -1444,10 +1444,16 @@ function kiChat() {
     const aktion = e.target.closest('[data-aktion]');
     if (!aktion) return;
     const leiste = aktion.closest('.fundus-ki-aktionen');
+    // Der Ausgangszustand wird nur beim ersten Klick gemerkt: Ein zweiter Klick innerhalb der 1,5 s hielte
+    // sonst den Haken für „vorher“, und der Knopf bliebe für immer ein Haken.
     const bestaetigen = () => {
-      const vorher = aktion.innerHTML;
+      aktion.dataset.vorher ??= aktion.innerHTML;
       aktion.innerHTML = aktion.dataset.aktion === 'code-kopieren' ? `${KI_SYMBOL.haken}<b>Kopiert</b>` : KI_SYMBOL.haken;
-      setTimeout(() => { aktion.innerHTML = vorher; }, 1500);
+      clearTimeout(aktion.fundusZurueck);
+      aktion.fundusZurueck = setTimeout(() => {
+        aktion.innerHTML = aktion.dataset.vorher;
+        delete aktion.dataset.vorher;
+      }, 1500);
     };
     if (aktion.dataset.aktion === 'code-kopieren') {
       try { await navigator.clipboard.writeText(aktion.closest('.fundus-ki-code').querySelector('code').textContent); bestaetigen(); } catch (err) { /* Zwischenablage gesperrt */ }
