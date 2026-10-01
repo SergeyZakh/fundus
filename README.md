@@ -26,12 +26,6 @@ denen, die die fragende Person auch selbst öffnen darf.
 [Entwicklung und Betrieb](docs/ENTWICKLUNG.md) · [Mitmachen](CONTRIBUTING.md) ·
 [Änderungen](CHANGELOG.md) · [Sicherheit](SECURITY.md)
 
-<p>
-  <img src="docs/vorstellung/folie-2.png" width="32%" alt="Frag Fundus: Antwort mit Quelle">
-  <img src="docs/vorstellung/folie-3.png" width="32%" alt="Ein Klick zur Fundstelle im Artikel">
-  <img src="docs/vorstellung/folie-5.png" width="32%" alt="Dieselbe Frage als Technik und als Azubi: Die KI sieht nur, was du sehen darfst">
-</p>
-
 ---
 
 ## Inhalt

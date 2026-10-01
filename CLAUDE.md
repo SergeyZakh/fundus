@@ -59,7 +59,7 @@ bash skripte/handbuch-einspielen.sh --trockenlauf
   außen: keine Schriften von Google, kein Gravatar, eigenes draw.io.
 - **Generiert, nicht von Hand ändern:** `docs/ENTWICKLUNG.pdf`, `theme/fundus/public/icon*.png`,
   `handbuch/bilder/*.png` (Ausnahme: die `editor-*.png` werden von Hand aufgenommen, weil der Editor
-  nachlädt), `docs/vorstellung/*` (`node skripte/vorstellung/bauen.mjs`). `theme/fundus/ki/vendor/**` sind fremde Bibliotheken — nicht anfassen.
+  nachlädt), `docs/vorstellung/*` (`node skripte/vorstellung/bauen.mjs`, nicht eingecheckt, hängt am Release). `theme/fundus/ki/vendor/**` sind fremde Bibliotheken — nicht anfassen.
 - **`wiki.js` steht inline in `kopf.blade.php`** (`file_get_contents`), weil BookStack den MIME-Typ
   von Theme-Dateien aus dem Inhalt rät und JavaScript für HTML hielt. Gleicher Grund für die Route
   `/fundus/ki/bibliotheken.js`. In `wiki.css` die Abschnitte **nicht umsortieren**, spätere

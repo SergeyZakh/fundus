@@ -466,9 +466,10 @@ bash skripte/handbuch-einspielen.sh --trockenlauf   # prüfen
 bash skripte/handbuch-einspielen.sh                 # einspielen
 ```
 
-Die Vorstellungsbilder in `docs/vorstellung/` (sieben Folien, 1600 × 2000 px) entstehen genauso aus dem laufenden
-Wiki, ohne Markierungen. `skripte/vorstellung/bauen.mjs` setzt sie mit Überschrift zusammen und legt daneben
-`fundus-vorstellung.pdf` mit allen Folien ab (nicht eingecheckt). Für die Dauer der Aufnahme legt es Beispieldaten
+Die Vorstellungsbilder (sieben Folien, 1600 × 2000 px) entstehen genauso aus dem laufenden Wiki, ohne
+Markierungen. `skripte/vorstellung/bauen.mjs` setzt sie mit Überschrift zusammen und legt sie mit
+`fundus-vorstellung.pdf` in `docs/vorstellung/` ab. Der Ordner ist nicht eingecheckt: Die Folien zeigen einen festen
+Stand und werden an das jeweilige Release gehängt. Für die Dauer der Aufnahme legt es Beispieldaten
 an (gelesene Artikel für Mia, eine Rückmeldung von Alex) und löscht sie danach wieder.
 
 ```bash

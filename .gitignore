@@ -4,8 +4,8 @@
 # Erzeugt: node docs/pdf-bauen.mjs
 docs/ENTWICKLUNG.pdf
 
-# Erzeugt: node skripte/vorstellung/bauen.mjs (die PNGs daneben sind eingecheckt)
-docs/vorstellung/fundus-vorstellung.pdf
+# Erzeugt: node skripte/vorstellung/bauen.mjs. Die Folien zeigen einen festen Stand und hängen am Release.
+docs/vorstellung/
 
 __pycache__/
 node_modules/
