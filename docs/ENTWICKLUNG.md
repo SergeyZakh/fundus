@@ -6,7 +6,7 @@ stand: 01.10.2026
 fakten:
   - BookStack 26.05.5 | linuxserver-Image, Theme „fundus“
   - MariaDB 11.8 | Inhalte, Rückmeldungen, KI-Vektoren
-  - Ollama 0.34.2 | qwen3.5:4b · bge-m3, im Stapel oder eigener Server
+  - Ollama 0.34.4 | qwen3.5:4b · bge-m3, im Stapel oder eigener Server
   - Docker Compose | hinter eigenem Reverse Proxy mit TLS
   - OIDC-Anmeldung | Keycloak mitgeliefert, Authentik und Entra möglich
   - 7 Dienste | wiki · datenbank · drawio · ocr · ollama · ollama-modelle · sicherung

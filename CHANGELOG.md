@@ -18,6 +18,10 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 - Bricht die Verbindung zu Ollama ab, nennt der Chat keine interne Adresse mehr. Die genaue Meldung
   steht im Protokoll des Wikis.
 
+### Geändert
+
+- Ollama 0.34.4 (vorher 0.34.2).
+
 ### Behoben
 
 - Nach schnellem Doppelklick auf „Kopieren“ im Chat blieb der Haken dauerhaft stehen.
