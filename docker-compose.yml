@@ -267,6 +267,10 @@ services:
       # Schreibend, weil die Wiederherstellung Uploads zurückspielt.
       - wiki-daten:/wiki
       - sicherungen:/sicherungen
+    # Das MariaDB-Image erklärt /var/lib/mysql zum Volume; ohne diese Zeile hinterließe jedes Neuanlegen des
+    # Containers ein leeres namenloses Volume. Der Dienst startet keinen eigenen Server, braucht den Ordner also nicht.
+    tmpfs:
+      - /var/lib/mysql
     depends_on:
       datenbank:
         condition: service_healthy
