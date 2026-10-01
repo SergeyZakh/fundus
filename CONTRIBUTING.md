@@ -1,8 +1,25 @@
 # Mitmachen
 
-Beiträge sind willkommen: Fehlermeldungen, Verbesserungen an Theme, Skripten, Doku oder Handbuch. Für größere Änderungen vorher ein Issue anlegen, damit Ansatz und Umfang geklärt sind.
+Danke, dass du helfen willst! Drei Wege, von klein nach groß:
 
-## Entwicklungsumgebung
+## 1. Eine Idee vorschlagen
+
+Dir fehlt etwas im Wiki, im Chat oder beim Betrieb? Eröffne ein Issue mit der Vorlage
+**„Vorschlag“**. Wichtig ist vor allem der Anlass: welches Problem es löst und wen es betrifft
+(Lesende, Redaktion, Admins, Betrieb).
+
+## 2. Einen Fehler melden
+
+Eröffne ein Issue mit der Vorlage **„Fehler melden“**. Beschreibe, was du gemacht hast, was
+passiert ist und was du erwartet hättest, dazu die Version von Fundus und den BookStack-Image-Tag.
+Screenshots und Protokolle helfen, aber bitte nur mit ausgedachten Inhalten: keine Zugangsdaten,
+keine Firmeninhalte, keine echten Namen.
+
+## 3. Code beitragen
+
+Für größere Änderungen vorher ein Issue anlegen, damit Ansatz und Umfang geklärt sind.
+
+### Entwicklungsumgebung
 
 ```bash
 python skripte/env-anlegen.py --lokal
@@ -18,7 +35,7 @@ Zwei Regeln, die sonst Zeit kosten:
 
 Unter Windows mit Git Bash vor Befehlen mit Containerpfaden `MSYS_NO_PATHCONV=1` setzen, sonst werden Pfade wie `/app/www` umgeschrieben.
 
-## Prüfen
+### Prüfen
 
 | Prüfung | Befehl | Wann |
 | --- | --- | --- |
@@ -31,7 +48,7 @@ Unter Windows mit Git Bash vor Befehlen mit Containerpfaden `MSYS_NO_PATHCONV=1`
 
 Neue Routen, Übersichten oder Abfragen bekommen einen Test in `skripte/tests/theme-tests.php`. Jede eigene Abfrage auf Inhalte läuft über `scopes('visible')`, damit niemand mehr sieht, als er öffnen darf.
 
-## Schreibweise
+### Schreibweise
 
 - **Deutsch** in Code, Kommentaren, Oberfläche und Doku. Bezeichner ohne Umlaute (`pruefen`, `rueckmeldung`), Texte mit.
 - **Präfix `fundus`** für alles Eigene: CSS-Klassen `fundus-…`, Routen `/fundus/…`, Tabellen `fundus_…`, Variablen `FUNDUS_…`.
@@ -51,3 +68,7 @@ Neue Routen, Übersichten oder Abfragen bekommen einen Test in `skripte/tests/th
 ## BookStack-Update
 
 Dependabot schlägt neue Image-Versionen vor. Ein BookStack-Update nur nach dem Ablauf im Kapitel „Update“ der Entwicklerdoku übernehmen: Rauchtest vorher und nachher vergleichen, Ziel-Views der Bausteine prüfen, `testen.sh` ausführen. `mariadb` in `docker-compose.yml` und `sicherung/Dockerfile` immer gemeinsam anheben, damit `mariadb-dump` zur Serverversion passt.
+
+## Sicherheitslücken
+
+Nicht als Issue, sondern über [SECURITY.md](SECURITY.md).

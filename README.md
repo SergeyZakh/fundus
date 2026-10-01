@@ -16,9 +16,21 @@ denen, die die fragende Person auch selbst öffnen darf.
 > Keine technischen Vorkenntnisse? **[Erste Schritte](docs/START.md)** erklärt jeden Schritt
 > einzeln – von Docker Desktop bis zum eingerichteten Wiki auf einem Windows-Rechner.
 
-**Alle Anleitungen:** [Erste Schritte](docs/START.md) ·
+> [!CAUTION]
+> Fundus ist für den Betrieb im eigenen Firmennetz gedacht. Ich rate davon ab, das Wiki mit echten
+> Inhalten ohne Reverse Proxy mit TLS offen ins Internet zu stellen. Version 0.1 ist eine
+> Vorabversion: Probier sie zuerst mit den Beispielinhalten aus, bevor echtes Firmenwissen
+> hineinkommt.
+
+**Anleitungen:** [Erste Schritte](docs/START.md) (ohne Vorkenntnisse, Schritt für Schritt) ·
 [Entwicklung und Betrieb](docs/ENTWICKLUNG.md) · [Mitmachen](CONTRIBUTING.md) ·
 [Änderungen](CHANGELOG.md) · [Sicherheit](SECURITY.md)
+
+<p>
+  <img src="docs/vorstellung/folie-2.png" width="32%" alt="Frag Fundus: Antwort mit Quelle">
+  <img src="docs/vorstellung/folie-3.png" width="32%" alt="Ein Klick zur Fundstelle im Artikel">
+  <img src="docs/vorstellung/folie-5.png" width="32%" alt="Dieselbe Frage als Technik und als Azubi: Die KI sieht nur, was du sehen darfst">
+</p>
 
 ---
 
@@ -249,11 +261,16 @@ Fehler und Vorschläge als [Issue](../../issues). Ablauf für Änderungen, Tests
 
 ## Lizenz
 
-[MIT](LICENSE) – nutzen, ändern, weitergeben, auch im Betrieb.
+[MIT](LICENSE) – nutzen, ändern, weitergeben, auch im Betrieb. Fehler, Wünsche und Ideen sind
+willkommen ([CONTRIBUTING.md](CONTRIBUTING.md)); Sicherheitslücken bitte nicht als Issue, sondern
+über [SECURITY.md](SECURITY.md) melden.
 
-Enthaltene Werke Dritter (Schrift, Symbole, Chat-Bibliotheken) behalten ihre eigenen Lizenzen;
-die Liste steht ebenfalls in [LICENSE](LICENSE). BookStack ist nicht enthalten und wird als
-Docker-Image bezogen.
+Mitgeliefert: die Schrift **Instrument Sans** unter der
+[SIL Open Font License 1.1](theme/fundus/public/fonts/OFL.txt), die Symbole von **Lucide** unter
+der [ISC License](theme/fundus/symbole/LICENSE) und für den KI-Chat **marked** (MIT),
+**DOMPurify** (Apache 2.0 / MPL 2.0) und **highlight.js** (BSD-3-Clause), mit ihren Lizenztexten in
+[theme/fundus/ki/vendor/](theme/fundus/ki/vendor/). BookStack selbst ist nicht enthalten und kommt
+als Docker-Image (MIT).
 
 ---
 
