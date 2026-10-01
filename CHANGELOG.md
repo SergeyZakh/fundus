@@ -13,6 +13,8 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 - **Texterkennung ohne Verbindung nach außen.** Der Dienst `ocr` hängt nur noch an einem internen
   Docker-Netz, das ihn mit dem Wiki verbindet. Selbst bei einer Lücke im PDF- oder Bildparser kann er
   keine Daten hinausschicken.
+- **Keycloak 26.8.0** (vorher 26.7.4). Behebt drei als kritisch eingestufte Lücken in mitgelieferten
+  Bibliotheken (Netty, Bouncy Castle). Anmeldetest mit 11 Prüfungen grün.
 - Bricht die Verbindung zu Ollama ab, nennt der Chat keine interne Adresse mehr. Die genaue Meldung
   steht im Protokoll des Wikis.
 

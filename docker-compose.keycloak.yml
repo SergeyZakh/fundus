@@ -11,7 +11,7 @@
 services:
   keycloak:
     # Feste Version, damit ein Update eine bewusste Änderung ist.
-    image: quay.io/keycloak/keycloak:26.7.4
+    image: quay.io/keycloak/keycloak:26.8.0
     restart: unless-stopped
     command: ["start", "--import-realm"]
     # Der Reverse Proxy beendet TLS und leitet KEYCLOAK_URL an diesen Port weiter
