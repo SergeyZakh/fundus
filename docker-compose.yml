@@ -28,6 +28,10 @@ services:
     # Nur für den Reverse Proxy auf demselben Rechner (Vorgabe 127.0.0.1:6875).
     ports:
       - "${WIKI_PORT:-127.0.0.1:6875}:80"
+    # default: Datenbank, draw.io, Ollama und Anmeldedienst; ocr: nur zur Texterkennung (internes Netz, siehe unten).
+    networks:
+      - default
+      - ocr
 
     environment:
       PUID: "1000"
@@ -208,6 +212,10 @@ services:
     restart: unless-stopped
     expose:
       - "8080"
+    # Nur im internen Netz „ocr“: Der Dienst erreicht das Wiki, aber nichts außerhalb des Stapels. Ein
+    # manipuliertes PDF könnte so selbst bei einer Lücke im Parser keine Daten hinausschicken.
+    networks:
+      - ocr
     environment:
       # Sprachen für Tesseract. Im Image sind Deutsch und Englisch; jede weitere braucht ihr Paket
       # tesseract-ocr-… in ocr/Dockerfile.
@@ -338,6 +346,12 @@ services:
     entrypoint: ["/bin/sh", "-c", "ollama pull \"$$KI_MODELL\" && ollama pull \"$$KI_EINBETTUNG\""]
     security_opt:
       - no-new-privileges:true
+
+networks:
+  default:
+  # Ohne Verbindung nach außen; nur wiki und ocr hängen daran.
+  ocr:
+    internal: true
 
 volumes:
   wiki-daten:

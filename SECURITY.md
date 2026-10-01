@@ -43,7 +43,8 @@ Unterstützt wird jeweils die neueste Version auf `main`.
 - **Nur zwei Ports, nur lokal.** Wiki und draw.io sind als Vorgabe nur auf
   `127.0.0.1` erreichbar, also nur für den Reverse Proxy auf demselben Server.
   Datenbank, OCR und Ollama haben keinen Port nach außen. Alle Dienste laufen mit `no-new-privileges`,
-  der OCR-Dienst zusätzlich schreibgeschützt und ohne Linux-Capabilities.
+  der OCR-Dienst zusätzlich schreibgeschützt, ohne Linux-Capabilities und in einem internen
+  Docker-Netz ohne Verbindung nach draußen.
 - **Sicherung außer Haus** wird mit `SICHERUNG_KOPIE_SCHLUESSEL` vor dem
   Hochladen verschlüsselt (rclone crypt). Das Protokoll schwärzt
   Zugangsdaten, bevor Admins im Wiki einen Fehler angezeigt bekommen.
@@ -53,8 +54,6 @@ Unterstützt wird jeweils die neueste Version auf `main`.
 - Ohne `SICHERUNG_KOPIE_SCHLUESSEL` liegt die Kopie außer Haus
   unverschlüsselt beim Ziel. Fundus weist Admins darauf hin, erzwingt es
   aber nicht.
-- Der OCR-Dienst hat trotz Schreibschutz Netzzugang nach außen. Wer das
-  nicht will, legt ihn in ein internes Docker-Netz.
 - Text aus Anhängen und Bildern (OCR) landet im Suchindex und bei der KI.
   Wer Zugangsdaten als Screenshot hochlädt, macht sie damit durchsuchbar –
   deshalb gilt im Handbuch: keine Zugangsdaten ins Wiki. Nimmt man das Bild
