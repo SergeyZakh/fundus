@@ -35,7 +35,8 @@ Unterstützt wird jeweils die neueste Version auf `main`.
   Person selbst öffnen darf. Geprüft in `skripte/tests/theme-tests.php`.
 - **Eigene Routen** (`/fundus/…`) verlangen eine Anmeldung und nutzen
   BookStacks CSRF-Schutz; Gäste werden abgewiesen, auch wenn in BookStack
-  der öffentliche Zugriff eingeschaltet ist.
+  der öffentliche Zugriff eingeschaltet ist. Der KI-Chat nimmt je Person höchstens
+  10 Fragen in der Minute an, damit niemand Ollama für alle anderen blockiert.
 - **Keine Daten nach außen.** Schrift im Theme, eigenes draw.io, keine
   Gravatar-Bilder, die KI läuft über Ollama im eigenen Stapel. Nur der Dienst
   `ollama-modelle` lädt beim Start Modelle von ollama.com; Fragen und Inhalte

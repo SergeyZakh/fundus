@@ -4,8 +4,17 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 
 ## Unveröffentlicht
 
+### Neu
+
+- `einrichten.py --texte` bringt die Beschreibungen von Bereichen, Themen und Abschnitten auf den
+  Stand des Skripts. Ohne die Option setzt es sie wie bisher nur beim Anlegen, damit Änderungen der
+  Redaktion bleiben.
+
 ### Sicherheit
 
+- **Frag Fundus nimmt je Person höchstens 10 Fragen in der Minute an.** Ollama rechnet eine Antwort
+  nach der anderen; ohne Grenze konnte eine Person oder ein Skript mit ihrer Sitzung den Chat für alle
+  blockieren. Wer darüber kommt, bekommt eine Meldung und fragt nach einer Minute weiter.
 - **Gäste sehen keine Personenliste mehr.** War in BookStack der öffentliche Zugriff eingeschaltet,
   stand in jeder Seite die Liste aller Konten mit Namen und Berufstitel. Die Startseite begrüßte
   Gäste außerdem mit „Hallo Guest“ und zeigte ihnen ein leeres Aktivitätsraster. Gäste sehen jetzt

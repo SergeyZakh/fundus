@@ -146,7 +146,7 @@ Im Browser verschiebt `wiki.js` danach vorhandene Elemente (Aktionen über den I
 
 | Route | Zweck |
 | --- | --- |
-| `POST /fundus/ki` | Frage stellen, Antwort als Datenstrom |
+| `POST /fundus/ki` | Frage stellen, Antwort als Datenstrom; höchstens 10 Fragen je Minute und Person, danach 429 |
 | `GET /fundus/ki/lauf/{lauf}` | Stand einer laufenden oder eben fertigen Antwort (läuft auf dem Server weiter) |
 | `POST /fundus/ki/lauf/{lauf}/stopp` | laufende Antwort abbrechen |
 | `GET /fundus/ki/bibliotheken.js` | Markdown, Bereinigung, Code-Hervorhebung für den Chat |
@@ -186,6 +186,7 @@ Artikel werden an Überschriften in Stücke zerlegt, als Vektoren in MariaDB ges
 - **Anhänge:** Der Text aus Anhängen und Bildern (Abschnitt „Texterkennung“) wird je Datei ein eigenes Stück mit dem Dateinamen als Überschrift, damit er den letzten Abschnitt nicht verwässert.
 - **Rechte:** Gesucht wird nur in Artikeln aus `Page::query()->scopes('visible')`, derselben Prüfung wie beim Öffnen.
 - **Antwort:** Das Modell antwortet nur aus den Stücken, belegt mit [n] und gibt nie Zugangsdaten aus. Der Browser bereinigt die Ausgabe mit DOMPurify.
+- **Grenze:** Ollama rechnet eine Antwort nach der anderen. Damit niemand den Chat für alle blockiert, nimmt er je Person höchstens 10 Fragen in der Minute an (`Ki::FRAGEN_PRO_MINUTE`).
 - **Verlauf:** Gespräche liegen nur im Browser und werden beim Abmelden gelöscht. Als Zusammenhang gehen die letzten vier Nachrichten mit, je höchstens 4000 Zeichen.
 
 | Stellschraube | Standard | Wirkung |
@@ -249,7 +250,7 @@ Artikel werden an Überschriften in Stücke zerlegt, als Vektoren in MariaDB ges
 > [!NOTE]
 > **Was das Skript überschreibt**
 >
-> Rollen und Bereichsrechte bei jedem Lauf. Themenrechte nur, wenn ein Thema noch keine eigenen hat, damit Einzelfreigaben erhalten bleiben. Inhalte werden nur angelegt, nie überschrieben.
+> Rollen und Bereichsrechte bei jedem Lauf. Themenrechte nur, wenn ein Thema noch keine eigenen hat, damit Einzelfreigaben erhalten bleiben. Inhalte werden nur angelegt, nie überschrieben. Beschreibungen von Bereichen, Themen und Abschnitten setzt es nur beim Anlegen; mit `--texte` bringt es sie auf den Stand der Datei, etwa nach einem Update mit neuen Formulierungen. Artikel und Vorlagen fasst es auch dann nicht an.
 
 Schaltet ein Admin in BookStack den öffentlichen Zugriff ein, lesen Gäste, was die Rolle „Public“ darf. KI-Chat, Rückmeldungen und Hinweise bleiben angemeldeten Personen vorbehalten, ebenso die Liste der Personen für Profilbilder und Titel. Die Startseite zeigt Gästen keine Begrüßung mit Namen, keine Aktivität und keine persönlichen Kästen.
 

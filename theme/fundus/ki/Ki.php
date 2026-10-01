@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\RateLimiter;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
@@ -212,6 +213,9 @@ class Ki
     /** Wie lange der Stand einer Antwort nach dem letzten Wort abrufbar bleibt (Sekunden). */
     public const LAUF_DAUER = 900;
 
+    /** So viele Fragen darf eine Person je Minute stellen. Im normalen Gespräch kommt niemand darauf. */
+    public const FRAGEN_PRO_MINUTE = 10;
+
     /**
      * Beantwortet eine Frage als Datenstrom (eine JSON-Zeile je Ereignis):
      * {"quellen": [...]}, dann {"text": "..."} je Wortstück, am Ende {"fertig": true}.
@@ -221,8 +225,16 @@ class Ki
      * über GET /fundus/ki/lauf/{lauf} (lauf()). Ohne Warteschlange, damit lange Texterkennungen den Chat
      * nicht aufhalten.
      */
-    public static function antworten(Request $request): StreamedResponse
+    public static function antworten(Request $request): StreamedResponse|JsonResponse
     {
+        // Ollama rechnet eine Antwort nach der anderen. Ohne Grenze könnte eine Person (oder ein Skript mit ihrer
+        // Sitzung) den Chat für alle anderen blockieren.
+        $zaehler = 'fundus-ki-fragen:' . user()->id;
+        if (RateLimiter::tooManyAttempts($zaehler, self::FRAGEN_PRO_MINUTE)) {
+            return response()->json(['fehler' => 'Zu viele Fragen in kurzer Zeit.'], 429);
+        }
+        RateLimiter::hit($zaehler, 60);
+
         $daten = $request->validate([
             'frage' => ['required', 'string', 'max:1000'],
             'verlauf' => ['array', 'max:6'],

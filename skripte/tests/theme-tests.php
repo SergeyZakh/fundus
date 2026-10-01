@@ -555,6 +555,28 @@ test('Frage ohne Text und zu langer Verlauf werden abgelehnt', function () {
     return $leer === true && $lang === true ? true : "leer: {$leer}; Verlauf: {$lang}";
 });
 
+test('Fragen je Person begrenzt: die elfte in einer Minute bekommt 429, andere fragen weiter', function () {
+    $frage = fn () => Ki::antworten(Request::create('/fundus/ki', 'POST', ['frage' => 'Wie richte ich ein Postfach ein?']));
+    $zaehler = fn (int $person) => 'fundus-ki-fragen:' . $person;
+    Illuminate\Support\Facades\RateLimiter::clear($zaehler(MITARBEITER));
+    Illuminate\Support\Facades\RateLimiter::clear($zaehler(AZUBI));
+    try {
+        // Die Antworten werden nicht abgespielt: Ollama wird nie gefragt, gezählt wird beim Eingang.
+        als(MITARBEITER);
+        for ($i = 1; $i <= Ki::FRAGEN_PRO_MINUTE; $i++) {
+            if ($frage()->getStatusCode() !== 200) return "Frage {$i} schon abgewiesen";
+        }
+        $elfte = $frage();
+        als(AZUBI);
+        $andere = $frage();
+        if ($elfte->getStatusCode() !== 429) return "elfte Frage: Status {$elfte->getStatusCode()}";
+        return $andere->getStatusCode() === 200 ? true : "andere Person: Status {$andere->getStatusCode()}";
+    } finally {
+        Illuminate\Support\Facades\RateLimiter::clear($zaehler(MITARBEITER));
+        Illuminate\Support\Facades\RateLimiter::clear($zaehler(AZUBI));
+    }
+});
+
 // ---------------------------------------------------------------------------
 abschnitt('Prüfung von Artikeln');
 // ---------------------------------------------------------------------------

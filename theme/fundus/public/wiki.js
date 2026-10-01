@@ -1535,7 +1535,9 @@ function kiChat() {
             throw Object.assign(new Error(`HTTP ${res.status}`), {
               fehler: res.status === 419 || res.status === 401
                 ? 'Deine Anmeldung ist abgelaufen. Lade die Seite neu und frag noch einmal.'
-                : `Die Frage kam nicht an (Fehler ${res.status}). Bitte gleich noch einmal versuchen.`,
+                : res.status === 429
+                  ? 'Das waren viele Fragen in kurzer Zeit. Warte eine Minute und frag dann noch einmal.'
+                  : `Die Frage kam nicht an (Fehler ${res.status}). Bitte gleich noch einmal versuchen.`,
             });
           }
           if (!res.body) throw new Error('ohne Datenstrom');
