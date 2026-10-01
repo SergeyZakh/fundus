@@ -1,0 +1,52 @@
+# Schlägt Updates für fest eingetragene Versionen als Pull Request vor. Vor dem Übernehmen:
+# node skripte/rauchtest.mjs und bash skripte/testen.sh (siehe CONTRIBUTING.md).
+#
+# Ein Update von BookStack (lscr.io/linuxserver/bookstack) nur nach dem Ablauf im Kapitel
+# „Update“ der Entwicklerdoku übernehmen: Das Theme hängt sich an BookStack-Views, die sich
+# zwischen Versionen ändern können.
+#
+# Je Bereich ein gesammelter Pull Request statt einem je Abhängigkeit, und monatlich statt
+# wöchentlich: Jeder Pull Request startet die Prüfungen und verbraucht Freiminuten.
+#
+# Hauptversionen von MariaDB bleiben außen vor. Der Server in docker-compose.yml und das
+# mariadb-dump im Image sicherung/ müssen zusammenpassen, also gehört der Sprung von Hand
+# gemacht – an beiden Stellen gleichzeitig.
+version: 2
+updates:
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      compose:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "mariadb"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: docker
+    directories:
+      - /ocr
+      - /sicherung
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 2
+    groups:
+      images:
+        patterns:
+          - "*"
+    ignore:
+      - dependency-name: "mariadb"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 1
+    groups:
+      actions:
+        patterns:
+          - "*"

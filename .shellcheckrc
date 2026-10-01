@@ -1,0 +1,2 @@
+# Deutsche Anführungszeichen („…“) in Ausgaben sind gewollt, keine vertippten Shell-Quotes.
+disable=SC1111

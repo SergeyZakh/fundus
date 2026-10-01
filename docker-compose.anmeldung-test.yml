@@ -1,0 +1,82 @@
+# Anmeldetest für skripte/anmeldung-testen.sh: Wiki mit leerer Datenbank, Keycloak mit eigenem Zertifikat.
+# Nie direkt starten; das Skript erzeugt vorher das Zertifikat und räumt danach alles ab.
+#
+# BookStack verlangt einen https-Aussteller. Deshalb erzeugt der Dienst „zertifikat“ eine Test-CA und ein
+# Zertifikat für keycloak.test. Browser und Rechner erreichen Keycloak über Port 8443 auf 127.0.0.1, das
+# Wiki im Container-Netz über den Alias keycloak.test – beide mit derselben Adresse im Token.
+#
+# Der Name darf NICHT auf .localhost enden: curl – und damit BookStack – schickt jeden solchen Namen
+# fest an 127.0.0.1, also an den eigenen Container, und die Discovery lief ins Leere.
+
+services:
+  zertifikat:
+    image: alpine:3.20
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        [ -f /zertifikate/server.pem ] && exit 0
+        apk add --no-cache openssl >/dev/null
+        cd /zertifikate
+        openssl req -x509 -newkey rsa:2048 -nodes -days 2 -subj "/CN=Fundus Test-CA" -keyout ca.key -out ca.pem
+        openssl req -newkey rsa:2048 -nodes -subj "/CN=keycloak.test" -keyout server.key -out server.csr
+        printf "subjectAltName=DNS:keycloak.test,DNS:localhost,IP:127.0.0.1" > san.txt
+        openssl x509 -req -in server.csr -CA ca.pem -CAkey ca.key -CAcreateserial -days 2 -extfile san.txt -out server.pem
+        chmod 644 server.key server.pem ca.pem
+    volumes:
+      - zertifikate:/zertifikate
+
+  keycloak:
+    # !override: nur dieser Port, nicht zusätzlich der aus docker-compose.keycloak.yml.
+    ports: !override
+      - "127.0.0.1:8443:8443"
+    environment:
+      KC_HOSTNAME: https://keycloak.test:8443
+      KC_HTTPS_CERTIFICATE_FILE: /zertifikate/server.pem
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /zertifikate/server.key
+      FUNDUS_WIKI_URL: http://localhost:6877
+      FUNDUS_WIKI_SECRET: anmeldung-test-geheimnis
+    volumes:
+      - zertifikate:/zertifikate:ro
+    # Mit Zertifikat spricht auch der Verwaltungsport TLS; das Skript wartet stattdessen auf den Realm.
+    healthcheck:
+      disable: true
+    depends_on:
+      zertifikat:
+        condition: service_completed_successfully
+    networks:
+      default:
+        aliases:
+          - keycloak.test
+
+  wiki:
+    # Eigener Port neben dem lokalen Wiki (6875), nicht zusätzlich.
+    ports: !override
+      - "127.0.0.1:6877:80"
+    environment:
+      APP_URL: http://localhost:6877
+      FUNDUS_TESTSTAPEL: "1"
+      OLLAMA_URL: ""
+      AUTH_METHOD: oidc
+      AUTH_AUTO_INITIATE: "false"
+      OIDC_NAME: Keycloak
+      OIDC_ISSUER: https://keycloak.test:8443/realms/fundus
+      OIDC_CLIENT_ID: wiki
+      OIDC_CLIENT_SECRET: anmeldung-test-geheimnis
+      # Titel aus dem Token ist im Betrieb aus; der Test prüft den optionalen Weg über Keycloak trotzdem.
+      FUNDUS_TITEL_CLAIM: titel
+    volumes:
+      - zertifikate:/zertifikate:ro
+
+  # Neben dem lokalen Wiki: draw.io ohne Port (6876 ist dort belegt).
+  drawio:
+    ports: !reset []
+
+  # Die Anmeldung braucht kein Sprachmodell; das Profil hält die Dienste an.
+  ollama:
+    profiles: ["nie"]
+  ollama-modelle:
+    profiles: ["nie"]
+
+volumes:
+  zertifikate:

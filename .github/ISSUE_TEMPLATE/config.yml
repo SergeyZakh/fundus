@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Sicherheitslücke melden
+    url: https://docs.github.com/de/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability
+    about: Nicht öffentlich melden, sondern über „Security → Report a vulnerability“ in diesem Repository (siehe SECURITY.md).
+  - name: Fragen zu BookStack selbst
+    url: https://www.bookstackapp.com/docs/
+    about: Bedienung und Einstellungen, die nicht vom Theme Fundus kommen.

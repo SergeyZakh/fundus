@@ -1,0 +1,19 @@
+# Zugangsdaten und Schlüssel des eigenen Betriebs
+.env
+
+# Erzeugt: node docs/pdf-bauen.mjs
+docs/ENTWICKLUNG.pdf
+
+# Erzeugt: node skripte/vorstellung/bauen.mjs (die PNGs daneben sind eingecheckt)
+docs/vorstellung/fundus-vorstellung.pdf
+
+__pycache__/
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+
+# Persönliche Merklisten
+docs/todo.md
+humantodo.md
+docs/pruefliste.md

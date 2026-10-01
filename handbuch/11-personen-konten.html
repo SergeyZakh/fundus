@@ -1,0 +1,49 @@
+<p>Konten im Wiki entstehen und verschwinden über den Anmeldedienst der Firma (Keycloak). Im Wiki selbst legt niemand Konten von Hand an: Die Rolle kommt aus dem Firmenkonto, den Berufstitel tragen Admins im Wiki ein.</p>
+<h2>Geltungsbereich</h2>
+<p>Alle Personen, die sich mit ihrem Firmenkonto anmelden. Zuständig sind Admin und IT.</p>
+<h2>Ablauf</h2>
+<h3>Neue Person</h3>
+<ol>
+<li>Die IT legt die Person in Keycloak an (Realm <strong>fundus</strong> → <strong>Users</strong>): Benutzername, E-Mail, Vor- und Nachname, <strong>Email verified</strong> an.</li>
+<li>Unter <strong>Credentials</strong> ein Startpasswort mit <strong>Temporary</strong> setzen. Bei der ersten Anmeldung wählt die Person ihr eigenes.</li>
+<li>Unter <strong>Groups</strong> <strong>eine</strong> passende Gruppe: <code>wiki-mitarbeiter</code>, <code>wiki-azubi</code>, <code>wiki-technik</code>, <code>wiki-redaktion</code> oder <code>wiki-admin</code>.</li>
+<li>Die Person meldet sich im Wiki an. Das Konto entsteht bei dieser ersten Anmeldung automatisch, mit Name und E-Mail aus Keycloak.</li>
+<li>Ein Admin trägt im Wiki den Berufstitel ein, etwa „Junior Consultant“ (siehe unten).</li>
+</ol>
+<h3>Rolle oder Titel ändern</h3>
+<p>Die Rolle über die Gruppe in Keycloak; das gilt ab der nächsten Anmeldung. Den Titel im Wiki wie unten beschrieben; das gilt sofort.</p>
+<p class="callout warning">Rollen im Wiki von Hand zu ändern bringt nichts: Bei der nächsten Anmeldung setzt das Wiki sie wieder auf die Gruppen aus Keycloak zurück.</p>
+<h3>Berufstitel</h3>
+<p>Der Titel steht neben dem Namen, etwa in der Kopfleiste und bei „Zuletzt geändert von“. Admins tragen ihn unter <strong>Einstellungen → Benutzer</strong> bei der Person ein, im Abschnitt <strong>Berufstitel</strong>, und speichern. Die Farbe richtet sich nach der Stufe; <strong>Automatisch</strong> leitet sie aus dem Titel ab („Senior …“ wird blau, „Auszubildende“ grün).</p>
+<table>
+<thead><tr><th>Stufe</th><th>Farbe</th><th>Zum Beispiel</th></tr></thead>
+<tbody>
+<tr><td>Leitung</td><td>schwarz</td><td>Geschäftsführung, Bereichsleitung</td></tr>
+<tr><td>Senior</td><td>blau</td><td>Senior Consultant, Teamleitung</td></tr>
+<tr><td>Junior</td><td>türkis</td><td>Consultant, Junior Consultant</td></tr>
+<tr><td>Azubi</td><td>grün</td><td>Auszubildende, Werkstudierende</td></tr>
+<tr><td>Team</td><td>grau</td><td>alle anderen</td></tr>
+</tbody>
+</table>
+<p class="callout info">Sollen Titel stattdessen aus Keycloak kommen (Attribute <code>titel</code> und <code>titel_stufe</code>), richtet die Technik das ein. Dann überschreibt jede Anmeldung den Titel im Wiki.</p>
+<h3>Person verlässt die Firma</h3>
+<ol>
+<li>Die IT deaktiviert das Konto in Keycloak (<strong>Enabled</strong> aus) oder nimmt es aus den wiki-Gruppen. Danach ist keine neue Anmeldung mehr möglich.</li>
+<li>Eine bereits offene Sitzung endet nach zwei Stunden ohne Aktivität. Muss der Zugriff sofort enden, löscht der Admin das Konto unter <strong>Einstellungen → Benutzer</strong>.</li>
+<li>Das Konto im Wiki darf bestehen bleiben: Artikel behalten so ihren Verlauf („zuletzt geändert von …“).</li>
+<li>Wird es gelöscht, unter <strong>Besitz migrieren</strong> eine Person wählen, der die Inhalte danach gehören.</li>
+</ol>
+<p><img src="bilder/personen-rollen.png" alt="Einstellungen: Liste der Rollen Admin, Redaktion, Technik, Mitarbeiter, Azubi und KI-Leser"></p>
+<p class="callout info">Wer in keiner wiki-Gruppe ist, kann sich zwar anmelden, bekommt aber keine Rolle und sieht keine Inhalte.</p>
+<h3>Notfall-Zugang</h3>
+<p>Fällt der Anmeldedienst aus, stellt die Technik das Wiki kurz auf die eingebaute Anmeldung um und legt ein Notfallkonto an (<code>php artisan bookstack:create-admin</code>). Ablauf in der Entwicklerdokumentation, Kapitel „Anmeldung“.</p>
+<h2>Verantwortlich</h2>
+<table>
+<thead><tr><th>Rolle</th><th>Aufgabe</th></tr></thead>
+<tbody>
+<tr><td>IT</td><td>Konten und Gruppen in Keycloak</td></tr>
+<tr><td>Admin</td><td>Rollen und Berufstitel im Wiki, Konten löschen, Notfall-Zugang</td></tr>
+</tbody>
+</table>
+<h2>Gültig ab und Überprüfung</h2>
+<p>Gültig ab: Umstellung auf die Anmeldung mit dem Firmenkonto<br>Nächste Überprüfung: halbjährlich</p>

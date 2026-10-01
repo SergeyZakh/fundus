@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" font-family="Instrument Sans, Segoe UI, Arial, sans-serif" fill="#141414">
+  <!-- Architektur von Fundus. Durchgezogen: Dienste im Stapel. Gestrichelt: außerhalb des Stapels. -->
+  <defs>
+    <marker id="pfeil" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 1L9 5L0 9z" fill="#5C5C5C"/></marker>
+    <style>
+      .kasten { fill: #fff; stroke: #BDBDBD; stroke-width: 1; }
+      .kern { fill: #fff; stroke: #141414; stroke-width: 1.4; }
+      .extern { fill: #fff; stroke: #8C8C8C; stroke-width: 1; stroke-dasharray: 4 3; }
+      .linie { fill: none; stroke: #5C5C5C; stroke-width: 1.1; marker-end: url(#pfeil); }
+      .name { font-size: 11px; font-weight: 600; }
+      .info { font-size: 9px; fill: #5C5C5C; }
+      .beschriftung { font-size: 8.5px; fill: #8C8C8C; }
+    </style>
+  </defs>
+
+  <!-- Stapel -->
+  <rect x="256" y="14" width="494" height="312" fill="#FAFAFA" stroke="#D6D6D6"/>
+  <text x="272" y="314" class="beschriftung">DOCKER-COMPOSE-STAPEL</text>
+
+  <!-- Außerhalb -->
+  <rect x="10" y="30" width="110" height="46" class="extern"/>
+  <text x="22" y="49" class="name">Anmeldung</text>
+  <text x="22" y="64" class="info">OIDC, z. B. Keycloak</text>
+
+  <rect x="10" y="140" width="110" height="46" class="kasten"/>
+  <text x="22" y="159" class="name">Browser</text>
+  <text x="22" y="174" class="info">Mitarbeitende</text>
+
+  <rect x="140" y="140" width="96" height="46" class="extern"/>
+  <text x="152" y="159" class="name">Proxy</text>
+  <text x="152" y="174" class="info">TLS, Domains</text>
+
+  <!-- Dienste im Stapel -->
+  <rect x="276" y="118" width="150" height="90" class="kern"/>
+  <text x="288" y="138" class="name">wiki</text>
+  <text x="288" y="154" class="info">BookStack 26.05.5</text>
+  <text x="288" y="168" class="info">Theme „fundus“</text>
+  <text x="288" y="182" class="info">Queue-Worker, cron</text>
+
+  <rect x="276" y="244" width="150" height="46" class="kasten"/>
+  <text x="288" y="263" class="name">drawio</text>
+  <text x="288" y="278" class="info">Diagramm-Editor</text>
+
+  <rect x="456" y="118" width="120" height="90" class="kasten"/>
+  <text x="468" y="138" class="name">datenbank</text>
+  <text x="468" y="154" class="info">MariaDB 11.8</text>
+  <text x="468" y="168" class="info">Inhalte, Rückmel-</text>
+  <text x="468" y="182" class="info">dungen, KI-Vektoren</text>
+
+  <rect x="456" y="244" width="120" height="46" class="kasten"/>
+  <text x="468" y="263" class="name">sicherung</text>
+  <text x="468" y="278" class="info">täglich, Kopie außer Haus</text>
+
+  <rect x="606" y="30" width="124" height="60" class="kasten"/>
+  <text x="618" y="49" class="name">ollama</text>
+  <text x="618" y="64" class="info">qwen3.5:4b · bge-m3</text>
+  <text x="618" y="78" class="info">oder eigener Server</text>
+
+  <rect x="606" y="118" width="124" height="46" class="kasten"/>
+  <text x="618" y="137" class="name">ocr</text>
+  <text x="618" y="152" class="info">Text aus PDFs, Bildern</text>
+
+  <!-- Verbindungen -->
+  <path d="M120 163 H138" class="linie"/>
+  <path d="M236 163 H274" class="linie"/>
+  <path d="M188 186 V267 H274" class="linie"/>
+  <path d="M426 163 H454" class="linie"/>
+  <path d="M516 244 V210" class="linie"/>
+  <path d="M65 140 V78" class="linie"/>
+  <text x="72" y="113" class="beschriftung">Login</text>
+  <path d="M120 53 H330 V116" class="linie"/>
+  <text x="140" y="47" class="beschriftung">Token mit Gruppen</text>
+  <path d="M380 116 V60 H604" class="linie"/>
+  <text x="470" y="54" class="beschriftung">OLLAMA_URL</text>
+  <path d="M410 116 V100 H668 V116" class="linie"/>
+  <text x="470" y="94" class="beschriftung">OCR_URL</text>
+</svg>

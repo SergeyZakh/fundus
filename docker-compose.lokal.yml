@@ -1,0 +1,11 @@
+# Test auf dem eigenen Rechner, ohne Reverse Proxy:
+#   docker compose -p fundus -f docker-compose.yml -f docker-compose.lokal.yml up -d
+# Danach http://localhost:6875 (APP_URL in .env muss genau so lauten, python skripte/env-anlegen.py --lokal
+# setzt das). Die Ports kommen aus docker-compose.yml; hier steht nur, was lokal zusätzlich gebraucht wird.
+
+services:
+  wiki:
+    # Nur für ein Ollama direkt auf dem Rechner statt im Container:
+    # OLLAMA_URL=http://host.docker.internal:11434 in der .env.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

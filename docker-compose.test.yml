@@ -1,0 +1,50 @@
+# Teststapel für skripte/testen.sh: eigener Compose-Projektname, eigene Volumes, keine Ports.
+# Nie direkt starten, das Skript spielt vorher eine Sicherung des lokalen Wikis ein.
+
+services:
+  wiki:
+    # Keine Ports: Der Teststapel läuft neben dem lokalen Wiki, das 6875 und 6876 belegt.
+    ports: !reset []
+    environment:
+      # Die Theme-Tests schreiben Daten und brechen ohne diese Markierung ab.
+      FUNDUS_TESTSTAPEL: "1"
+      # Die Tests ersetzen Ollama durch feste Vektoren; die Adresse darf nie erreichbar sein.
+      OLLAMA_URL: http://ki-attrappe.invalid:11434
+      # Ebenso die Texterkennung: Die Tests ersetzen ihre Antworten.
+      OCR_URL: http://ocr-attrappe.invalid:8080
+      AUTH_METHOD: standard
+      AUTH_AUTO_INITIATE: "false"
+      # Titel aus dem Token ist im Betrieb aus; die Tests prüfen den optionalen Weg trotzdem.
+      FUNDUS_TITEL_CLAIM: titel
+    volumes:
+      - ./skripte/tests:/tests:ro
+
+  # Kopie außer Haus über ein echtes Netzwerkprotokoll: ein zweiter Container als WebDAV-Ziel.
+  sicherung:
+    environment:
+      # URL in Anführungszeichen: Sie enthält selbst Doppelpunkte. Nutzer und Passwort nur, damit der Test
+      # sieht, dass beides nach einem Fehler nicht in status.json steht (das Ziel prüft sie nicht).
+      SICHERUNG_KOPIE: ":webdav,url='http://kopie-ziel:8080',user=test,pass=qQe0BETl4dOC56pdN_-8mm6hK39QGyXrX5CfmxzCriuVSOnM:fundus"
+      SICHERUNG_KOPIE_SCHLUESSEL: "nur-fuer-den-teststapel"
+      SICHERUNG_KOPIE_TAGE: "90"
+    depends_on:
+      kopie-ziel:
+        condition: service_started
+
+  kopie-ziel:
+    build: ./sicherung
+    entrypoint: ["rclone", "serve", "webdav", "/daten", "--addr", ":8080"]
+    volumes:
+      - kopie-ziel:/daten
+
+  drawio:
+    ports: !reset []
+
+  # Die Tests ersetzen Ollama (siehe OLLAMA_URL oben); das Profil hält die Dienste an.
+  ollama:
+    profiles: ["nie"]
+  ollama-modelle:
+    profiles: ["nie"]
+
+volumes:
+  kopie-ziel:

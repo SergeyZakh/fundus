@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 210" font-family="Instrument Sans, Segoe UI, Arial, sans-serif" fill="#141414">
+  <!-- KI-Chat: oben Indexierung beim Speichern, unten Beantwortung einer Frage. -->
+  <defs>
+    <marker id="pfeil" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 1L9 5L0 9z" fill="#5C5C5C"/></marker>
+    <style>
+      .kasten { fill: #fff; stroke: #BDBDBD; stroke-width: 1; }
+      .kern { fill: #fff; stroke: #141414; stroke-width: 1.4; }
+      .linie { fill: none; stroke: #5C5C5C; stroke-width: 1.1; marker-end: url(#pfeil); }
+      .name { font-size: 11px; font-weight: 600; }
+      .info { font-size: 9px; fill: #5C5C5C; }
+      .zeile { font-size: 8.5px; fill: #8C8C8C; letter-spacing: .5px; }
+    </style>
+  </defs>
+
+  <text x="0" y="12" class="zeile">INDEXIERUNG · BEIM SPEICHERN EINES ARTIKELS</text>
+  <rect x="0"   y="22" width="120" height="48" class="kasten"/><text x="12"  y="41" class="name">Artikel gespeichert</text><text x="12"  y="57" class="info">ACTIVITY_LOGGED</text>
+  <rect x="150" y="22" width="120" height="48" class="kasten"/><text x="162" y="41" class="name">IndexJob</text><text x="162" y="57" class="info">Warteschlange</text>
+  <rect x="300" y="22" width="120" height="48" class="kasten"/><text x="312" y="41" class="name">Zerlegen</text><text x="312" y="57" class="info">an Überschriften</text>
+  <rect x="450" y="22" width="120" height="48" class="kasten"/><text x="462" y="41" class="name">Einbetten</text><text x="462" y="57" class="info">bge-m3</text>
+  <rect x="600" y="22" width="120" height="48" class="kern"/><text x="612" y="41" class="name">Index</text><text x="612" y="57" class="info">fundus_ki_stuecke</text>
+  <path d="M120 46 H148" class="linie"/><path d="M270 46 H298" class="linie"/><path d="M420 46 H448" class="linie"/><path d="M570 46 H598" class="linie"/>
+
+  <text x="0" y="132" class="zeile">BEANTWORTUNG · JE FRAGE</text>
+  <rect x="0"   y="142" width="120" height="48" class="kasten"/><text x="12"  y="161" class="name">Frage</text><text x="12"  y="177" class="info">mit Gesprächsverlauf</text>
+  <rect x="150" y="142" width="120" height="48" class="kasten"/><text x="162" y="161" class="name">Einbetten</text><text x="162" y="177" class="info">bge-m3</text>
+  <rect x="300" y="142" width="120" height="48" class="kern"/><text x="312" y="161" class="name">Suchen</text><text x="312" y="177" class="info">nur lesbare Artikel</text>
+  <rect x="450" y="142" width="120" height="48" class="kasten"/><text x="462" y="161" class="name">Antworten</text><text x="462" y="177" class="info">qwen3.5:4b</text>
+  <rect x="600" y="142" width="120" height="48" class="kasten"/><text x="612" y="161" class="name">Browser</text><text x="612" y="177" class="info">Text mit Quellen</text>
+  <path d="M120 166 H148" class="linie"/><path d="M270 166 H298" class="linie"/><path d="M420 166 H448" class="linie"/><path d="M570 166 H598" class="linie"/>
+
+  <path d="M660 70 V104 H360 V140" class="linie"/>
+  <text x="520" y="98" class="zeile">Vektorsuche</text>
+</svg>
