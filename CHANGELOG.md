@@ -4,6 +4,25 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 
 ## Unveröffentlicht
 
+### Sicherheit
+
+- **Gäste sehen keine Personenliste mehr.** War in BookStack der öffentliche Zugriff eingeschaltet,
+  stand in jeder Seite die Liste aller Konten mit Namen und Berufstitel. Die Startseite begrüßte
+  Gäste außerdem mit „Hallo Guest“ und zeigte ihnen ein leeres Aktivitätsraster. Gäste sehen jetzt
+  nur Bereiche, „Zuletzt geändert“ und „Häufig gebraucht“.
+- **Texterkennung ohne Verbindung nach außen.** Der Dienst `ocr` hängt nur noch an einem internen
+  Docker-Netz, das ihn mit dem Wiki verbindet. Selbst bei einer Lücke im PDF- oder Bildparser kann er
+  keine Daten hinausschicken.
+- Bricht die Verbindung zu Ollama ab, nennt der Chat keine interne Adresse mehr. Die genaue Meldung
+  steht im Protokoll des Wikis.
+
+### Behoben
+
+- Nach schnellem Doppelklick auf „Kopieren“ im Chat blieb der Haken dauerhaft stehen.
+- Die Startseite zählte Vorlagen als Artikel, die übrigen Übersichten nicht.
+- Der Dienst `sicherung` hinterließ bei jedem Neuanlegen des Containers ein leeres namenloses Volume.
+- `.env.example` nannte zwei echte Domains als Beispiel.
+
 ## [0.1.0] – 2026-10-01
 
 Erste öffentliche Version, als Vorabversion gekennzeichnet.

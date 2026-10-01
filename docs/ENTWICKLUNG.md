@@ -199,6 +199,7 @@ Artikel werden an Überschriften in Stücke zerlegt, als Vektoren in MariaDB ges
 - Anhänge eines Artikels (PDF, Bild) und Bilder im Artikeltext gehen nach dem Hochladen in der Warteschlange an den Dienst `ocr`. Seiten mit eigenem Text liest er aus, Scans erkennt Tesseract; zu unsichere Wörter und Seiten fallen weg (`OCR_WORT_MIN`, `OCR_SEITE_MIN`).
 - Der Text liegt in `fundus_datei_texte` und hängt als eingeklappter Block „Text aus Anhängen und Bildern“ am Artikel. So findet ihn BookStacks Suche mit ihren Rechten; die KI bekommt ihn als eigene Stücke.
 - **Bilder zählen nur, solange der Artikel sie zeigt.** BookStack behält ein aus dem Text genommenes Bild in der Galerie; sein Text verschwindet trotzdem beim nächsten Speichern aus Block, Suche und KI.
+- Der Dienst `ocr` hängt nur am internen Docker-Netz `ocr` (`internal: true`), das ihn mit dem Wiki verbindet. Er erreicht nichts außerhalb des Stapels; PDF- und Bildparser sind die größte Angriffsfläche.
 - Vorhandene Dateien einmalig: `fundus:datei-text` (Anhang B). Code: `theme/fundus/dateitext/Dateitext.php`.
 
 ## Rückmeldungen
@@ -249,7 +250,7 @@ Artikel werden an Überschriften in Stücke zerlegt, als Vektoren in MariaDB ges
 >
 > Rollen und Bereichsrechte bei jedem Lauf. Themenrechte nur, wenn ein Thema noch keine eigenen hat, damit Einzelfreigaben erhalten bleiben. Inhalte werden nur angelegt, nie überschrieben.
 
-Schaltet ein Admin in BookStack den öffentlichen Zugriff ein, lesen Gäste, was die Rolle „Public“ darf. KI-Chat, Rückmeldungen und Hinweise bleiben angemeldeten Personen vorbehalten.
+Schaltet ein Admin in BookStack den öffentlichen Zugriff ein, lesen Gäste, was die Rolle „Public“ darf. KI-Chat, Rückmeldungen und Hinweise bleiben angemeldeten Personen vorbehalten, ebenso die Liste der Personen für Profilbilder und Titel. Die Startseite zeigt Gästen keine Begrüßung mit Namen, keine Aktivität und keine persönlichen Kästen.
 
 <!-- neue Seite -->
 
@@ -479,7 +480,7 @@ node skripte/vorstellung/bauen.mjs 3                # nur Folie 3
 
 # Stand und offene Punkte
 
-Stand 24.09.2026.
+Stand 01.10.2026.
 
 ## Tests
 
