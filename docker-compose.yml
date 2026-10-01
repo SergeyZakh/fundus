@@ -20,7 +20,7 @@ services:
     # Community-Image von linuxserver.io; BookStack selbst bietet kein offizielles
     # Image an. Die Version ist fest, damit ein Update eine bewusste Änderung ist
     # (Ablauf in docs/ENTWICKLUNG.md, Kapitel „Update“).
-    image: lscr.io/linuxserver/bookstack:26.05.5
+    image: lscr.io/linuxserver/bookstack:26.09.1
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true

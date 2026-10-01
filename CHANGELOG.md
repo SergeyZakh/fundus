@@ -20,6 +20,10 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 
 ### Geändert
 
+- **BookStack 26.09.1** (vorher 26.05.5). BookStack übergibt an Artikelansicht und Startseite
+  weniger Daten, weil die Seitenleisten jetzt eigene Blöcke sind. Ohne Anpassung fehlten Artikelkopf,
+  Rückmeldung und die ganze Startseite von Fundus. Die Bausteine erkennen ihre Seite jetzt anders und
+  holen die Listen selbst; mit älteren Versionen laufen sie weiter.
 - Ollama 0.34.4 (vorher 0.34.2).
 - Rauchtest, Handbuch-Bilder und Vorstellungsbilder steuern Chrome über ein gemeinsames Modul
   `skripte/wiki-browser.mjs` statt über drei fast gleiche Kopien. Ihre Hilfsskripte im Wiki-Container

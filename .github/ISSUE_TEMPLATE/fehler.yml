@@ -34,7 +34,7 @@ body:
     attributes:
       label: Version
       description: Commit oder Release von Fundus, BookStack-Image-Tag
-      placeholder: "main @ abc1234, lscr.io/linuxserver/bookstack:26.05.5"
+      placeholder: "main @ abc1234, lscr.io/linuxserver/bookstack:26.09.1"
     validations:
       required: true
   - type: dropdown

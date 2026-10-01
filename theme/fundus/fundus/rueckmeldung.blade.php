@@ -1,8 +1,14 @@
 {{-- Unter jedem Artikel (vor der Vor/Zurück-Navigation): „War dieser Artikel hilfreich?“ und ein Formular,
      um Veraltetes oder Fehler zu melden. Logik: wiki.js (rueckmeldungen), Speicherung: rueckmeldung/Rueckmeldung.php.
-     sibling-navigation gibt es auch bei Abschnitten; nur Artikel ($page mit $pageNav) bekommen den Block. --}}
-@if(isset($page, $pageNav) && $page instanceof \BookStack\Entities\Models\Page && !$page->draft && user()->hasAppAccess() && !user()->isGuest())
-    @php($rueckmeldung = \FundusRueckmeldung\Rueckmeldung::fuerSeite($page))
+     sibling-navigation gibt es auch bei Abschnitten; nur Artikel ($page mit $commentTree, das setzt nur die
+     Artikelansicht) bekommen den Block. --}}
+@if(isset($page, $commentTree) && $page instanceof \BookStack\Entities\Models\Page && !$page->draft && user()->hasAppAccess() && !user()->isGuest())
+    @php
+        $rueckmeldung = \FundusRueckmeldung\Rueckmeldung::fuerSeite($page);
+        // Überschriften für „Wo im Artikel?“. Seit BookStack 26.09 berechnet sie nur noch der Seitenleisten-Block;
+        // hier genauso aus dem schon gerenderten Inhalt.
+        $abschnitte = $pageNav ?? (new \BookStack\Entities\Tools\PageContent($page))->getNavigation($page->html);
+    @endphp
     <section class="fundus-rueckmeldung print-hidden" data-fundus-rueckmeldung data-seite="{{ $page->id }}"
              data-gelesen-adresse="{{ url('/fundus/gelesen') }}" data-lesezeit="{{ \FundusAktivitaet\Aktivitaet::LESEZEIT }}"
              data-adresse="{{ url('/fundus/rueckmeldung') }}" aria-label="Rückmeldung zu diesem Artikel">
@@ -50,7 +56,7 @@
                 <span>Wo im Artikel?</span>
                 <select name="abschnitt" data-abschnitt>
                     <option value="">Ganzer Artikel</option>
-                    @foreach($pageNav as $eintrag)
+                    @foreach($abschnitte as $eintrag)
                         @continue($eintrag['level'] > 3)
                         <option value="{{ $eintrag['text'] }}">{{ $eintrag['level'] > 2 ? '– ' : '' }}{{ $eintrag['text'] }}</option>
                     @endforeach

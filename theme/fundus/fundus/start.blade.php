@@ -1,9 +1,17 @@
 {{-- Startseite (Einstellung „Startseite: Regale“, im Wiki „Bereiche“). Wird nach shelves.parts.list eingefügt;
-     wiki.css blendet BookStacks eigene Regalliste auf der Startseite aus. Nur die Startseite
-     liefert $recentlyUpdatedPages mit, daran erkennen wir sie (die Liste gibt es auch unter /shelves).
+     wiki.css blendet BookStacks eigene Regalliste auf der Startseite aus. Nur die Startseite setzt $homeView
+     (seit BookStack 26.09) bzw. $recentlyUpdatedPages (davor), daran erkennen wir sie; die Liste gibt es auch
+     unter /shelves. Seit 26.09 berechnen die Seitenleisten-Blöcke Zuletzt geändert, Entwürfe und Favoriten selbst;
+     fehlen sie, holt der Baustein sie mit denselben Abfragen wie BookStack.
      Alle Abfragen sind die rechtegefilterten von BookStack: Jeder sieht nur, was er lesen darf. --}}
-@if(isset($recentlyUpdatedPages))
+@if(isset($recentlyUpdatedPages) || ($homeView ?? null) === 'bookshelves')
     @php
+        $seitenAbfragen = app(\BookStack\Entities\Queries\PageQueries::class);
+        $recentlyUpdatedPages ??= $seitenAbfragen->visibleForList()->where('draft', false)
+            ->orderBy('updated_at', 'desc')->take(8)->get();
+        $draftPages ??= user()->isGuest() ? [] : $seitenAbfragen->currentUserDraftsForList()
+            ->orderBy('updated_at', 'desc')->with('book')->take(6)->get();
+        $favourites ??= app(\BookStack\Entities\Queries\QueryTopFavourites::class)->run(6);
         $keineVorlage = fn ($e) => !($e instanceof \BookStack\Entities\Models\Page && $e->template);
         $zuletzt = $recentlyUpdatedPages->filter($keineVorlage)->take(6);
         // Meistgelesene Seiten über alle Nutzer, nicht persönliche Favoriten:

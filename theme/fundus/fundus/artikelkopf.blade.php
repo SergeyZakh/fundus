@@ -1,7 +1,8 @@
 {{-- Stand und Lesezeit unter dem Seitentitel, wie bei Microsoft Learn.
      page-display wird auch für Revisionen, Exporte und die Startseite genutzt;
-     nur die normale Seitenansicht setzt $pageNav, daran erkennen wir sie. --}}
-@if(isset($pageNav) && isset($page) && $page instanceof \BookStack\Entities\Models\Page)
+     nur die normale Seitenansicht setzt $commentTree, daran erkennen wir sie. ($pageNav, das frühere Merkmal,
+     gibt es seit BookStack 26.09 nur noch im Seitenleisten-Block.) --}}
+@if(isset($commentTree, $page) && $page instanceof \BookStack\Entities\Models\Page)
     @php
         $geaendert = $page->updated_at->clone()->setTimezone(config('app.display_timezone'));
         // Rund 180 Wörter pro Minute: Fachtexte liest man langsamer als Romane.

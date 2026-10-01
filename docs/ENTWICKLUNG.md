@@ -4,7 +4,7 @@ untertitel: Das Firmenwiki und seine KI – Aufbau, Betrieb und Pflege.
 marke: Fundus · Entwicklerdoku
 stand: 01.10.2026
 fakten:
-  - BookStack 26.05.5 | linuxserver-Image, Theme „fundus“
+  - BookStack 26.09.1 | linuxserver-Image, Theme „fundus“
   - MariaDB 11.8 | Inhalte, Rückmeldungen, KI-Vektoren
   - Ollama 0.34.4 | qwen3.5:4b · bge-m3, im Stapel oder eigener Server
   - Docker Compose | hinter eigenem Reverse Proxy mit TLS
@@ -386,6 +386,8 @@ gilt `titel.php`.
 1. Versionshinweise von BookStack lesen (Theme-Ereignisse, Views, Rechte).
 2. Lokal: Rauchtest vorher, Image-Tag erhöhen, neu starten.
 3. Prüfen, ob alle Ziel-Views noch existieren (Befehl in Anhang B), Rauchtest nachher, `bash skripte/testen.sh` muss grün sein.
+   Vorher- und Nachher-Ergebnis des Rauchtests vergleichen: Fehlt ein Baustein, ohne dass ein Fehler kommt, hat
+   BookStack meist eine Variable nicht mehr übergeben, an der das Theme eine Seite erkennt (siehe „Fallstricke“).
    Eine Vorlage ersetzt das Theme ganz statt nur Bausteine einzuhängen: die Profilseite
    (`theme/fundus/users/profile.blade.php`). Mit BookStacks `resources/views/users/profile.blade.php` der
    neuen Version vergleichen, ob neue Daten oder Abschnitte dazugekommen sind.
@@ -538,6 +540,7 @@ Probleme, die schon einmal Zeit gekostet haben. Bei merkwürdigem Verhalten zuer
 | SQL-Fehler nach Modellwechsel | `KI_DIMENSION` passt nicht; Index mit `--neu` bauen. |
 | Leere Variable in `.env` wirkt im Wiki wie „nicht gesetzt“ | PHP-FPM reicht leere Umgebungsvariablen nicht durch; es greift die Vorgabe im PHP-Code. Die muss deshalb dasselbe bedeuten wie „leer“ (Beispiel `FUNDUS_TITEL_CLAIM`). Theme-Tests laufen per CLI und sehen die leere Variable. |
 | Container nutzt nach `git pull` die alte Fassung einer Datei | Einzeln gemountete Dateien hängen an der alten Datei, weil Git Dateien ersetzt statt überschreibt. Ordner mounten (wie `skripte/` im Dienst `sicherung`). |
+| Artikelkopf, Rückmeldung oder Startseite fehlen nach einem Update, ohne Fehlermeldung | Die Bausteine erkennen ihre Seite an Variablen der View. BookStack 26.09 übergab `$pageNav` und `$recentlyUpdatedPages` nicht mehr; jetzt gelten `$commentTree` (Artikel) und `$homeView` (Startseite), die Listen holt der Baustein selbst. Rauchtest vorher und nachher vergleichen. |
 | Direkte SQL-Abfrage auf `pages` scheitert | Seit BookStack 26 liegen Inhalte in `entities` und `entity_page_data`. In Skripten die Modelle oder diese Tabellen verwenden. |
 
 # Anhang: Befehle

@@ -381,6 +381,19 @@ abschnitt('Rückmeldungen');
 $senden = fn (array $daten) => Rueckmeldung::speichern(Request::create('/fundus/rueckmeldung', 'POST', $daten));
 DB::table(Rueckmeldung::TABELLE)->where('user_id', MITARBEITER)->whereIn('page_id', [$anleitung->id, $handbuchArtikel->id])->delete();
 
+// Die Bausteine erkennen den Artikel an Variablen der View; BookStack 26.09 hat eine davon ($pageNav) gestrichen,
+// und Kopf und Rückmeldung fehlten dann still.
+test('Artikel zeigt Kopf und Rückmeldung, „Wo im Artikel?“ nennt die Abschnitte', function () use ($anleitung) {
+    $html = aufruf(parse_url($anleitung->getUrl(), PHP_URL_PATH), MITARBEITER)['html'];
+    $falsch = [];
+    if (!str_contains($html, 'data-fundus-artikelkopf')) $falsch[] = 'Artikelkopf';
+    if (!str_contains($html, 'data-fundus-rueckmeldung')) $falsch[] = 'Rückmeldung';
+    foreach (['Ziel', 'Schritte'] as $abschnitt) {
+        if (!str_contains($html, '<option value="' . $abschnitt . '">')) $falsch[] = "Abschnitt „{$abschnitt}“";
+    }
+    return $falsch ? 'Fehlt: ' . implode(', ', $falsch) : true;
+});
+
 test('Stimme wird gespeichert', function () use ($senden, $anleitung) {
     als(MITARBEITER);
     return $senden(['page_id' => $anleitung->id, 'art' => 'ja'])->getStatusCode() === 200;
