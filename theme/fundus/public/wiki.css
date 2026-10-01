@@ -240,6 +240,21 @@ html:not(.dark-mode) {
   @media (min-width: 1000px) {
     .breadcrumbs .icon-list-item > span:first-child { display: none; }
   }
+  /* Am Handy zeigt BookStack nur Symbole, man sieht nicht, wohin eines führt. Stattdessen nur das übergeordnete
+     Glied als „‹ Exchange Online“: eine Ebene zurück, wie in Handy-Apps. Hat der Pfad nur ein Glied (die Seite
+     selbst), bleibt die Leiste leer. Der Pfeil wird nicht vorgelesen. */
+  @media (max-width: 1000px) {
+    .breadcrumbs > * { display: none; }
+    /* Das vorletzte Glied, egal ob das letzte ein Link ist (Artikel) oder nur Text (Listen wie „Bereiche“). */
+    .breadcrumbs > a.icon-list-item:has(~ .icon-list-item):not(:has(~ .icon-list-item ~ .icon-list-item)) {
+      display: flex;
+      max-width: 100%;
+      flex-shrink: 1;
+      > span:first-child { display: none; }
+      > span + span { display: inline; }
+      > span + span::before { content: "‹\00a0"; content: "‹\00a0" / ""; }
+    }
+  }
   /* Die Brotkrumen-Listen der Nachbarbücher sind Klapp-Menüs, kein eigener Punkt. */
   .breadcrumbs .dropdown-container > .icon-list-item { padding-inline: 2px; }
 

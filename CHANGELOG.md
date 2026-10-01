@@ -34,6 +34,8 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
   Rückmeldung und die ganze Startseite von Fundus. Die Bausteine erkennen ihre Seite jetzt anders und
   holen die Listen selbst; mit älteren Versionen laufen sie weiter.
 - Ollama 0.34.4 (vorher 0.34.2).
+- Am Handy zeigt die Pfadleiste statt dreier Symbole ohne Text nur das übergeordnete Glied, etwa
+  „‹ Exchange Online“: eine Ebene zurück, wie in Handy-Apps. Am PC bleibt der ganze Pfad.
 - Der Fuß des Chats sagt nur noch „Antworten können Fehler enthalten, prüf die Quelle.“ und passt
   damit auch in die schmale Seitenleiste in eine Zeile. Die Handbuch-Bilder des Chats sind neu aufgenommen.
 - Rauchtest, Handbuch-Bilder und Vorstellungsbilder steuern Chrome über ein gemeinsames Modul
