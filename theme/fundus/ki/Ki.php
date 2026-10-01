@@ -469,7 +469,9 @@ TEXT;
             },
         ]);
         if (curl_exec($curl) === false && curl_errno($curl) !== CURLE_WRITE_ERROR) {
-            $senden(['fehler' => 'Die KI ist gerade nicht erreichbar: ' . curl_error($curl)]);
+            // Die curl-Meldung nennt interne Adressen; sie gehört ins Protokoll, nicht in den Chat.
+            report(new \RuntimeException('Ollama-Chat: ' . curl_error($curl)));
+            $senden(['fehler' => 'Die KI ist gerade nicht erreichbar. Läuft Ollama?']);
         }
         curl_close($curl);
     }
