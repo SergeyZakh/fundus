@@ -12,6 +12,11 @@ Benötigt nur Python 3.10+ ohne Zusatzpakete. Aufruf:
     BOOKSTACK_TOKEN_ID=... BOOKSTACK_TOKEN_SECRET=... \
     python skripte/einrichten.py
     python skripte/einrichten.py --beispiele    # dazu drei Beispielartikel und zwei Beispielkonten
+    python skripte/einrichten.py --texte        # Beschreibungen auf den Stand dieser Datei bringen
+
+Beschreibungen von Bereichen, Themen und Abschnitten setzt das Skript sonst nur beim Anlegen, damit
+Änderungen der Redaktion im Wiki bleiben. Mit --texte überschreibt es sie mit den Texten unten, etwa
+nach einem Update von Fundus mit neuen Formulierungen. Artikel und Vorlagen fasst es nie an.
 
 Das Token gehört einem Konto mit der Rolle Admin (Anleitung: docs/ENTWICKLUNG.md,
 Kapitel „Ersteinrichtung“).
@@ -377,6 +382,18 @@ class Api:
         return treffer[0] if treffer else None
 
 
+TEXTE = "--texte" in sys.argv[1:]
+
+
+def beschreibung_angleichen(api: Api, pfad: str, eintrag: dict, soll: str | None) -> None:
+    """Mit --texte: Beschreibung im Wiki auf den Text aus dieser Datei setzen, falls sie abweicht."""
+    if not TEXTE or soll is None:
+        return
+    if (eintrag.get("description") or "").strip() != soll.strip():
+        api.anfrage("PUT", f"{pfad}/{eintrag['id']}", {"description": soll})
+        meldung("✓", f"Beschreibung: {eintrag['name']}")
+
+
 def meldung(zeichen: str, text: str) -> None:
     print(f"  {zeichen} {text}")
 
@@ -489,6 +506,8 @@ def vorlagen_einrichten(api: Api, rollen_ids: dict[str, int]) -> tuple[dict[str,
         buch = api.anfrage("POST", "books", {"name": VORLAGEN_BUCH["name"], "description": VORLAGEN_BUCH["beschreibung"]})
         meldung("+", f"Buch {buch['name']} angelegt")
     symbol_setzen(api, "books", buch["id"], VORLAGEN_BUCH["symbol"])
+    if TEXTE:
+        beschreibung_angleichen(api, "books", api.anfrage("GET", f"books/{buch['id']}"), VORLAGEN_BUCH["beschreibung"])
     if not hat_eigene_rechte(api, "book", buch["id"]):
         # Alle müssen Vorlagen lesen können, sonst greift die Standardvorlage beim Anlegen nicht.
         rechte_setzen(api, "book", buch["id"], rollen_ids, {"Mitarbeiter": LESEN, "Azubi": LESEN})
@@ -532,6 +551,7 @@ def struktur_einrichten(api: Api, rollen_ids: dict[str, int], vorlagen_ids: dict
                 meldung("+", f"Buch {b['name']}")
             symbol_setzen(api, "books", buch["id"], b.get("symbol"))
             buch = api.anfrage("GET", f"books/{buch['id']}")
+            beschreibung_angleichen(api, "books", buch, b.get("beschreibung"))
             buch_ids.append(buch["id"])
             standardvorlage(api, "book", buch, b.get("vorlage"), vorlagen_ids, markiert)
 
@@ -544,6 +564,7 @@ def struktur_einrichten(api: Api, rollen_ids: dict[str, int], vorlagen_ids: dict
                     })
                     meldung("+", f"Kapitel {b['name']} / {k['name']}")
                 kapitel = api.anfrage("GET", f"chapters/{kapitel['id']}")
+                beschreibung_angleichen(api, "chapters", kapitel, k.get("beschreibung"))
                 standardvorlage(api, "chapter", kapitel, k.get("vorlage"), vorlagen_ids, markiert)
 
                 seiten_vorhanden = {s["name"] for s in kapitel.get("pages", [])}
@@ -570,6 +591,8 @@ def struktur_einrichten(api: Api, rollen_ids: dict[str, int], vorlagen_ids: dict
                 api.anfrage("PUT", f"shelves/{vorhanden['id']}", {"books": bisher + fehlend})
                 meldung("✓", f"{len(fehlend)} Buch/Bücher ins Regal gestellt")
 
+        if TEXTE:
+            beschreibung_angleichen(api, "shelves", api.anfrage("GET", f"shelves/{vorhanden['id']}"), regal["beschreibung"])
         symbol_setzen(api, "shelves", vorhanden["id"], regal.get("symbol"))
         rechte_setzen(api, "bookshelf", vorhanden["id"], rollen_ids, regal_rechte)
 
