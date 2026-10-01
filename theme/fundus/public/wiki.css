@@ -69,6 +69,19 @@
 
   --kopf-hoehe: 64px;
   --font-body: var(--sans);
+  /* Wiederkehrende Töne. Einmalige Paletten (Hinweiskästen, Code-Hervorhebung, Initialen,
+     Titelstufen) stehen bei ihrem Baustein. */
+  --text-hover: #33333A;  /* dunkle Knöpfe beim Hover */
+  --band-hell: #FAFAF8;   /* Zeilen beim Hover */
+  --leise:     #9A9891;   /* Zahlen, Platzhalter, Fußnoten */
+  --gut-kante: #BFDDC8;  --acht-kante: #EDC6C1;
+  --bernstein: #8A5300;  --bernstein-hell: #FFF7E6;  --bernstein-kante: #F1D9A6;
+  --markierung: #FFF1A8;  /* Suchtreffer */
+  --code-hell: #F0EFEA;   /* Code im Fließtext */
+  /* Codeblöcke (dunkel): Chat und Editor */
+  --code-grund: #1B1B20;  --code-kopf: #26262C;  --code-kante: #2A2A30;  --code-text: #E6E6EA;
+  --code-kopf-text: #A8A8B0;  --code-knopf: #C8C8D0;
+  --code-leiste: #4A4A55;  --code-leiste-hover: #6A6A76;
 }
 
 :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
@@ -523,7 +536,7 @@ html:not(.dark-mode) {
       position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
     }
     &.haupt { background: var(--text); border-color: var(--text); color: var(--flaeche); padding-inline: 10px 14px; }
-    &.haupt:hover, &.haupt:focus-visible { background: #33333A; border-color: #33333A; }
+    &.haupt:hover, &.haupt:focus-visible { background: var(--text-hover); border-color: var(--text-hover); }
   }
   /* Symbolknöpfe als eine Pille: dünne Kante außen, innen runde Flächen beim Überfahren. */
   .fundus-aktionen-gruppe {
@@ -614,7 +627,7 @@ html:not(.dark-mode) {
     border-color: var(--text);
     color: var(--flaeche);
     padding-inline: 18px;
-    &:hover, &:focus { background: #33333A; border-color: #33333A; color: var(--flaeche); filter: none; box-shadow: none; }
+    &:hover, &:focus { background: var(--text-hover); border-color: var(--text-hover); color: var(--flaeche); filter: none; box-shadow: none; }
     &:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
   }
   .button.outline {
@@ -806,7 +819,7 @@ html:not(.dark-mode) {
       line-height: 20px;
     }
     &.success {
-      --kasten: #1A7F37;
+      --kasten: var(--gut);
       --kasten-grund: #EDF7EF;
       --kasten-kante: #C3E3CB;
       --kasten-symbol: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A7F37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 18h6M10 21.5h4'/%3E%3Cpath d='M12 2.5a6.5 6.5 0 0 0-3.9 11.7c.6.5.9 1.1.9 1.8V16h6v-.1c0-.7.3-1.3.9-1.8A6.5 6.5 0 0 0 12 2.5z'/%3E%3C/svg%3E");
@@ -814,14 +827,14 @@ html:not(.dark-mode) {
     &.success::before { content: "Tipp"; }
     &.warning {
       --kasten: #9A5B00;
-      --kasten-grund: #FFF7E6;
-      --kasten-kante: #F1D9A6;
+      --kasten-grund: var(--bernstein-hell);
+      --kasten-kante: var(--bernstein-kante);
       border-inline-start-color: #D98E04;
       --kasten-symbol: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239A5B00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-2.9L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cpath d='M12 9.5v4M12 17h.01'/%3E%3C/svg%3E");
     }
     &.warning::before { content: "Wichtig"; }
     &.danger {
-      --kasten: #B42318;
+      --kasten: var(--acht);
       --kasten-grund: #FDEFED;
       --kasten-kante: #F3C7C1;
       --kasten-symbol: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B42318' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7.9 2.5h8.2l5.4 5.4v8.2l-5.4 5.4H7.9l-5.4-5.4V7.9z'/%3E%3Cpath d='M12 7.5v5M12 16.5h.01'/%3E%3C/svg%3E");
@@ -1072,7 +1085,7 @@ html:not(.dark-mode) {
     div { display: flex; align-items: baseline; gap: 6px; padding: 4px 12px; border: 1px solid var(--linie); border-radius: 999px; background: var(--band); }
     dt { font-size: .78rem; color: var(--schiefer); }
     dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
-    div.gut { background: var(--gut-hell); border-color: #BFDDC8; dt, dd { color: var(--gut); } }
+    div.gut { background: var(--gut-hell); border-color: var(--gut-kante); dt, dd { color: var(--gut); } }
   }
 
   .fundus-kreis {
@@ -1146,16 +1159,16 @@ html:not(.dark-mode) {
     font-size: .72rem;
     font-weight: 500;
     white-space: nowrap;
-    &.acht { color: var(--acht); background: var(--acht-hell); border-color: #EDC6C1; }
-    &.gut { color: var(--gut); background: var(--gut-hell); border-color: #BFDDC8; }
-    &.bald { color: #8A5300; background: #FFF7E6; border-color: #F1D9A6; }
+    &.acht { color: var(--acht); background: var(--acht-hell); border-color: var(--acht-kante); }
+    &.gut { color: var(--gut); background: var(--gut-hell); border-color: var(--gut-kante); }
+    &.bald { color: var(--bernstein); background: var(--bernstein-hell); border-color: var(--bernstein-kante); }
   }
   .fundus-zu-pruefen h2 .anzahl {
     display: inline-block; min-width: 20px; margin-left: 6px; padding: 0 6px; border-radius: 999px;
     background: var(--acht-hell); color: var(--acht); font-size: .72rem; line-height: 20px; text-align: center; vertical-align: 2px;
   }
-  .fundus-kreis.fundus-kreis-gut { background: var(--gut-hell); border-color: #BFDDC8; color: var(--gut); }
-  .fundus-kreis.fundus-kreis-hinweis { background: #FFF7E6; border-color: #F1D9A6; color: #8A5300; }
+  .fundus-kreis.fundus-kreis-gut { background: var(--gut-hell); border-color: var(--gut-kante); color: var(--gut); }
+  .fundus-kreis.fundus-kreis-hinweis { background: var(--bernstein-hell); border-color: var(--bernstein-kante); color: var(--bernstein); }
   .fundus-extern { flex: none; color: var(--schiefer); font-size: .9rem; padding-right: 4px; }
   .fundus-dank {
     margin: -24px 0 40px;
@@ -1402,7 +1415,7 @@ html:not(.dark-mode) {
     strong {
       font-weight: 600;
       color: var(--text);
-      background: #FFF1A8;
+      background: var(--markierung);
       border-radius: 3px;
       padding: 0 2px;
       box-decoration-break: clone;
@@ -1449,7 +1462,7 @@ html:not(.dark-mode) {
     .fundus-monogramm { display: grid; place-items: center; flex: none; width: 52px; height: 52px; font-size: 1.4rem; font-weight: 600; line-height: 1; }
     /* Der Name fährt beim Überfahren nach links aus, sonst bleibt nur der runde Knopf. */
     .text { max-width: 0; overflow: hidden; white-space: nowrap; opacity: 0; transition: max-width .22s ease, opacity .15s, padding .22s; }
-    &:hover, &:focus-visible { background: #33333A; }
+    &:hover, &:focus-visible { background: var(--text-hover); }
     &:hover .text, &:focus-visible .text { max-width: 160px; opacity: 1; padding-right: 20px; }
     &.offen { transform: scale(.94); }
     /* Zahl neuer Hinweise (wiki.js, hinweise). */
@@ -1457,7 +1470,7 @@ html:not(.dark-mode) {
       content: attr(data-anzahl);
       position: absolute; top: -4px; right: -4px;
       display: grid; place-items: center; min-width: 21px; height: 21px; padding: 0 6px; box-sizing: border-box;
-      border-radius: 999px; background: var(--ki); color: #fff; font-size: .72rem; font-weight: 700; line-height: 1;
+      border-radius: 999px; background: var(--ki); color: var(--flaeche); font-size: .72rem; font-weight: 700; line-height: 1;
       box-shadow: 0 0 0 2px var(--flaeche);
     }
   }
@@ -1527,7 +1540,7 @@ html:not(.dark-mode) {
     ul { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
     li { display: flex; gap: 10px; padding: 8px 10px; border-radius: 10px; }
     li:hover { background: var(--band); }
-    li .symbol { flex: none; display: grid; place-items: center; width: 26px; height: 26px; margin-top: 1px; border-radius: 8px; background: #FFF7E6; color: #8A5300; }
+    li .symbol { flex: none; display: grid; place-items: center; width: 26px; height: 26px; margin-top: 1px; border-radius: 8px; background: var(--bernstein-hell); color: var(--bernstein); }
     li.pruefung .symbol { background: var(--band); color: var(--schiefer); }
     li.pruefung.dringend .symbol { background: var(--acht-hell); color: var(--acht); }
     li .symbol svg { width: 14px; height: 14px; }
@@ -1539,7 +1552,7 @@ html:not(.dark-mode) {
     .fuss button { padding: 5px 12px; border: 1px solid var(--linie-fest); border-radius: 999px; background: var(--flaeche); color: var(--text); font: inherit; font-size: .8rem; cursor: pointer; }
     .fuss button:hover { background: var(--band); }
     .fuss button.voll { background: var(--text); border-color: var(--text); color: var(--flaeche); }
-    .fuss button.voll:hover { background: #33333A; }
+    .fuss button.voll:hover { background: var(--text-hover); }
   }
   @media print { .fundus-hinweise, .fundus-ki-knopf { display: none; } }
 
@@ -1696,7 +1709,7 @@ html:not(.dark-mode) {
       max-width: 85%;
       padding: 9px 15px;
       border-radius: 18px;
-      background: #F0EFEA;
+      background: var(--code-hell);
       line-height: 1.55;
       white-space: pre-wrap;
     }
@@ -1720,7 +1733,7 @@ html:not(.dark-mode) {
     strong { font-weight: 600; }
     em { color: var(--schiefer); }
     hr { margin: 1.2em 0; border: 0; border-top: 1px solid var(--linie); }
-    code { background: #F0EFEA; border-radius: 5px; padding: .1em .35em; font-size: .85em; }
+    code { background: var(--code-hell); border-radius: 5px; padding: .1em .35em; font-size: .85em; }
   }
   @keyframes fundus-ki-einblenden { from { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .fundus-ki-text .fundus-ki-block.neu > * { animation: none; } }
@@ -1728,18 +1741,18 @@ html:not(.dark-mode) {
   /* Codeblöcke: eigener Kasten mit Sprache und Kopieren, scrollt seitlich statt überzulaufen */
   .fundus-ki-code {
     margin: .5em 0 .7em;
-    border: 1px solid #2A2A30;
+    border: 1px solid var(--code-kante);
     border-radius: 12px;
     overflow: hidden;
-    background: #1B1B20;
+    background: var(--code-grund);
   }
   .fundus-ki-code-kopf {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 4px 6px 4px 12px;
-    background: #26262C;
-    color: #A8A8B0;
+    background: var(--code-kopf);
+    color: var(--code-kopf-text);
     font-size: .72rem;
     button {
       display: inline-flex; align-items: center; gap: 5px;
@@ -1747,12 +1760,12 @@ html:not(.dark-mode) {
       border: 0;
       border-radius: 6px;
       background: none;
-      color: #C8C8D0;
+      color: var(--code-knopf);
       font: inherit;
       cursor: pointer;
       svg { width: 13px; height: 13px; }
       b { font-weight: 500; }
-      &:hover { background: rgba(255, 255, 255, .08); color: #FFF; }
+      &:hover { background: rgba(255, 255, 255, .08); color: var(--flaeche); }
     }
   }
   .fundus-ki-text .fundus-ki-code pre {
@@ -1768,9 +1781,9 @@ html:not(.dark-mode) {
     border: 0;
     border-radius: 0;
     scrollbar-width: thin;
-    scrollbar-color: #4A4A55 transparent;
+    scrollbar-color: var(--code-leiste) transparent;
     &::-webkit-scrollbar { height: 8px; }
-    &::-webkit-scrollbar-thumb { background: #4A4A55; border-radius: 999px; border: 2px solid #1B1B20; }
+    &::-webkit-scrollbar-thumb { background: var(--code-leiste); border-radius: 999px; border: 2px solid var(--code-grund); }
     code {
       display: block;
       white-space: pre;
@@ -1779,7 +1792,7 @@ html:not(.dark-mode) {
       background: none;
       border: 0;
       padding: 0;
-      color: #E6E6EA;
+      color: var(--code-text);
       font-size: .82rem;
       line-height: 1.6;
     }
@@ -1798,38 +1811,38 @@ html:not(.dark-mode) {
     .hljs-type, .hljs-title.class_, .hljs-class { color: #7FD6C2; }
     .hljs-variable, .hljs-template-variable, .hljs-params { color: #E0B8F0; }
     .hljs-comment, .hljs-quote, .hljs-meta, .hljs-deletion { color: #8B8B96; font-style: italic; }
-    .hljs-operator, .hljs-punctuation { color: #C8C8D0; }
+    .hljs-operator, .hljs-punctuation { color: var(--code-knopf); }
   }
 
   /* Codeblöcke in Artikeln: dunkler Kasten mit Kopfzeile (Sprache) und Kopieren-Knopf darin */
   .page-content .fundus-code {
     position: relative;
     margin: 1em 0;
-    border: 1px solid #2A2A30;
+    border: 1px solid var(--code-kante);
     border-radius: 12px;
     overflow: hidden;
-    background: #1B1B20;
+    background: var(--code-grund);
     &::before {
       content: attr(data-sprache);
       display: block;
       padding: 7px 12px;
-      background: #26262C;
-      color: #A8A8B0;
+      background: var(--code-kopf);
+      color: var(--code-kopf-text);
       font-size: .74rem;
       line-height: 18px;
     }
     /* BookStack gibt jedem Codeblock unten Abstand; im Kasten läge der unter der Scrollleiste. */
-    .cm-editor { margin: 0 !important; border: 0 !important; border-radius: 0; background: #1B1B20; font-size: .86rem; }
+    .cm-editor { margin: 0 !important; border: 0 !important; border-radius: 0; background: var(--code-grund); font-size: .86rem; }
     .cm-content, .cm-gutter { padding-block: 6px; }
     /* Schmale, dunkle Scrollleiste statt der hellen Standardleiste. */
     .cm-scroller {
       padding: 0;
       scrollbar-width: thin;
-      scrollbar-color: #4A4A55 transparent;
+      scrollbar-color: var(--code-leiste) transparent;
       &::-webkit-scrollbar { height: 8px; width: 8px; }
       &::-webkit-scrollbar-track { background: transparent; }
-      &::-webkit-scrollbar-thumb { background: #4A4A55; border-radius: 999px; border: 2px solid #1B1B20; }
-      &::-webkit-scrollbar-thumb:hover { background: #6A6A76; }
+      &::-webkit-scrollbar-thumb { background: var(--code-leiste); border-radius: 999px; border: 2px solid var(--code-grund); }
+      &::-webkit-scrollbar-thumb:hover { background: var(--code-leiste-hover); }
     }
     .cm-copy-button {
       top: 4px;
@@ -1840,12 +1853,12 @@ html:not(.dark-mode) {
       border: 0;
       border-radius: 6px;
       background: transparent;
-      color: #C8C8D0;
+      color: var(--code-knopf);
       opacity: 1;
       pointer-events: all;
       svg { width: 14px; height: 14px; }
-      &:hover { background: rgba(255, 255, 255, .08); color: #FFF; }
-      &.success { background: var(--gut); color: #FFF; }
+      &:hover { background: rgba(255, 255, 255, .08); color: var(--flaeche); }
+      &.success { background: var(--gut); color: var(--flaeche); }
     }
   }
   /* BookStacks Kopieren-Knopf sitzt am Editor; in der Kopfzeile ausrichten. */
@@ -1873,7 +1886,7 @@ html:not(.dark-mode) {
       color: transparent;
       animation: fundus-ki-schimmer 3.2s linear infinite;
     }
-    .info { font-size: .8rem; color: #9A9891; font-variant-numeric: tabular-nums; }
+    .info { font-size: .8rem; color: var(--leise); font-variant-numeric: tabular-nums; }
   }
   @keyframes fundus-ki-schimmer { from { background-position: 100% 0; } to { background-position: -200% 0; } }
   @media (prefers-reduced-motion: reduce) { .fundus-ki-denkt .wort { animation: none; } }
@@ -1902,7 +1915,7 @@ html:not(.dark-mode) {
   .fundus-ki-quellen-titel {
     padding: 8px 12px 7px;
     border-bottom: 1px solid var(--linie);
-    background: #FAFAF8;
+    background: var(--band-hell);
     font-size: .72rem;
     font-weight: 500;
     color: var(--schiefer);
@@ -1922,25 +1935,25 @@ html:not(.dark-mode) {
       text-align: start;
       cursor: pointer;
       transition: background-color .15s;
-      &:hover { background: #FAFAF8; }
+      &:hover { background: var(--band-hell); }
     }
-    .nr { flex: none; min-width: 14px; font-size: .74rem; font-weight: 500; color: #9A9891; font-variant-numeric: tabular-nums; }
+    .nr { flex: none; min-width: 14px; font-size: .74rem; font-weight: 500; color: var(--leise); font-variant-numeric: tabular-nums; }
     .text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
     .titel { font-size: .85rem; font-weight: 500; line-height: 1.35; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .thema { font-size: .74rem; line-height: 1.35; color: var(--schiefer); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .pfeil { flex: none; width: 15px; height: 15px; color: #9A9891; transition: transform .2s; }
+    .pfeil { flex: none; width: 15px; height: 15px; color: var(--leise); transition: transform .2s; }
     &.offen .pfeil { transform: rotate(180deg); }
   }
   /* BookStack umrandet Knöpfe beim Anklicken gestrichelt; hier nur bei Tastaturbedienung ein ruhiger Rahmen. */
   .fundus-ki-quelle > button:focus { outline: none; }
   .fundus-ki-quelle > button:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--linie-fest); }
-  .fundus-ki-quelle.offen > button { background: #FAFAF8; }
+  .fundus-ki-quelle.offen > button { background: var(--band-hell); }
 
   /* Aufgeklappt: je Ausschnitt eine leicht getönte Karte, Abschnitt klein darüber, darunter der Weg zum Artikel. */
   .fundus-ki-zitate {
     display: none;
     padding: 2px 12px 12px;
-    background: #FAFAF8;
+    background: var(--band-hell);
     .fundus-ki-quelle.offen & { display: block; }
   }
   .fundus-ki-zitat {
@@ -2032,7 +2045,7 @@ html:not(.dark-mode) {
       font-size: .93rem;
       line-height: 1.45;
       outline: none;
-      &::placeholder { color: #9A9891; }
+      &::placeholder { color: var(--leise); }
     }
     button {
       flex: none;
@@ -2040,7 +2053,7 @@ html:not(.dark-mode) {
       border-radius: 10px;
       border: 0;
       background: #E4E2DC;
-      color: #fff;
+      color: var(--flaeche);
       display: inline-flex; align-items: center; justify-content: center;
       cursor: pointer;
       transition: background-color .15s, transform .1s;
@@ -2049,14 +2062,14 @@ html:not(.dark-mode) {
       &:active { transform: scale(.94); }
     }
     &.hat-text button { background: var(--text); }
-    &.hat-text button:hover { background: #33333A; }
+    &.hat-text button:hover { background: var(--text-hover); }
   }
   .fundus-ki.laeuft .fundus-ki-feld button {
     background: var(--text);
     .senden { display: none; }
     .stopp { display: block; }
   }
-  .fundus-ki-fuss { margin: 8px 0 0; font-size: .68rem; color: #9A9891; text-align: center; }
+  .fundus-ki-fuss { margin: 8px 0 0; font-size: .68rem; color: var(--leise); text-align: center; }
 
   /* Vollbild wie ein Chat-Programm: ganzer Bildschirm, Inhalt in einer mittigen Spalte */
   .fundus-ki.gross {
@@ -2100,7 +2113,7 @@ html:not(.dark-mode) {
       font-size: .86rem;
       transition: border-color .15s, background-color .15s, box-shadow .15s;
       &::after { align-self: flex-end; }
-      &:hover { padding-inline-start: 16px; border-color: var(--linie-fest); background: #FAFAF8; box-shadow: 0 6px 18px -12px rgba(22, 22, 26, .25); }
+      &:hover { padding-inline-start: 16px; border-color: var(--linie-fest); background: var(--band-hell); box-shadow: 0 6px 18px -12px rgba(22, 22, 26, .25); }
     }
     .fundus-ki-kopfknopf .auf { display: none; }
     .fundus-ki-kopfknopf .zu { display: block; }
@@ -2261,7 +2274,7 @@ html:not(.dark-mode) {
     .entity-list { margin: 0 -10px; }
     .entity-list > * + * { border-top: 1px solid var(--linie); }
     .entity-list-item { margin: 0; padding: 12px 10px; border-radius: 10px; }
-    .entity-list-item:hover { background: #FAFAF8; }
+    .entity-list-item:hover { background: var(--band-hell); }
     .entity-list-item-name { margin: 0 0 2px; font-size: .95rem; font-weight: 600; }
     .entity-item-snippet { font-size: .78rem; }
     .entity-item-snippet p {
@@ -2411,7 +2424,7 @@ html:not(.dark-mode) {
       border-radius: 10px;
     }
     li + li { border-top: 1px solid var(--linie); border-radius: 0; }
-    li:hover { background: #FAFAF8; }
+    li:hover { background: var(--band-hell); }
     a { min-width: 0; display: flex; flex-direction: column; color: var(--text); text-decoration: none; }
     a:hover .titel { text-decoration: underline; text-underline-offset: 3px; }
     .titel { font-size: .9rem; font-weight: 500; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -2519,7 +2532,7 @@ html:not(.dark-mode) {
     svg { width: 12px; height: 12px; flex: none; }
     .fundus-monogramm {
       display: grid; place-items: center; flex: none; width: 15px; height: 15px; border-radius: 4px;
-      background: var(--ki); color: #fff; font-size: .62rem; font-weight: 700; line-height: 1;
+      background: var(--ki); color: var(--flaeche); font-size: .62rem; font-weight: 700; line-height: 1;
     }
     button {
       display: inline-flex; align-items: center; justify-content: center;
@@ -2610,10 +2623,10 @@ html:not(.dark-mode) {
     align-items: center;
     gap: 5px;
     padding: 0 9px 0 7px;
-    border: 1px solid #F1D9A6;
+    border: 1px solid var(--bernstein-kante);
     border-radius: 999px;
-    background: #FFF7E6;
-    color: #8A5300;
+    background: var(--bernstein-hell);
+    color: var(--bernstein);
     font-size: .76rem;
     font-weight: 500;
     line-height: 22px;
@@ -2751,7 +2764,7 @@ html:not(.dark-mode) {
     gap: 12px;
     margin: 14px -20px -14px;
     padding: 14px 20px;
-    border-top: 1px solid #BFDDC8;
+    border-top: 1px solid var(--gut-kante);
     border-radius: 0 0 var(--rund) var(--rund);
     background: var(--gut-hell);
     &[hidden] { display: none; }
@@ -2766,12 +2779,12 @@ html:not(.dark-mode) {
     .zahlen span { padding: 0 9px; border: 1px solid var(--linie); border-radius: 999px; background: var(--flaeche); font-size: .75rem; line-height: 20px; color: var(--schiefer); }
     .leer { margin: 0; font-size: .8rem; color: var(--schiefer); }
     .hinweise { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-    .hinweise li { padding: 8px 10px; border: 1px solid #F1D9A6; border-radius: var(--rund-klein); background: #FFF7E6; }
+    .hinweise li { padding: 8px 10px; border: 1px solid var(--bernstein-kante); border-radius: var(--rund-klein); background: var(--bernstein-hell); }
     .hinweise p { margin: 0 0 4px; font-size: .82rem; line-height: 1.45; color: var(--text); }
     .plaketten { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
     .plaketten span { padding: 0 7px; border-radius: 999px; font-size: .68rem; font-weight: 600; line-height: 17px; }
-    .plaketten .grund { background: #8A5300; color: #FFF7E6; }
-    .plaketten .stelle { background: var(--flaeche); border: 1px solid #F1D9A6; color: #8A5300; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .plaketten .grund { background: var(--bernstein); color: var(--bernstein-hell); }
+    .plaketten .stelle { background: var(--flaeche); border: 1px solid var(--bernstein-kante); color: var(--bernstein); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; font-size: .72rem; color: var(--schiefer); }
     .meta a { color: var(--text); }
     .meta button { margin-inline-start: auto; padding: 1px 8px; border: 1px solid var(--linie-fest); border-radius: 999px; background: var(--flaeche); font: inherit; font-size: .72rem; cursor: pointer; }
@@ -2788,7 +2801,7 @@ html:not(.dark-mode) {
     dd a { color: var(--text); }
     .quelle { display: block; font-size: .68rem; color: var(--schiefer); }
     &.faellig [data-faellig] { color: var(--acht); font-weight: 600; }
-    &.bald [data-faellig] { color: #8A5300; font-weight: 600; }
+    &.bald [data-faellig] { color: var(--bernstein); font-weight: 600; }
     .hinweis { margin: 6px 0 0; font-size: .78rem; color: var(--gut); }
   }
   .fundus-pruefung-knopf {
@@ -2797,7 +2810,7 @@ html:not(.dark-mode) {
     background: var(--flaeche); color: var(--text); font: inherit; font-size: .8rem; font-weight: 500; cursor: pointer;
     svg { width: 14px; height: 14px; }
     &:hover { background: var(--text); border-color: var(--text); color: var(--flaeche); }
-    .faellig & { background: var(--acht); border-color: var(--acht); color: #fff; }
+    .faellig & { background: var(--acht); border-color: var(--acht); color: var(--flaeche); }
     .faellig &:hover { filter: brightness(1.1); }
   }
 
@@ -3133,7 +3146,7 @@ html:not(.dark-mode) {
     &.stufe-leitung { background: var(--text); border-color: var(--text); color: var(--flaeche); }
     &.stufe-senior { background: #E8F0FB; border-color: #C6D8F1; color: #1F5FAD; }
     &.stufe-junior { background: #E2F4F2; border-color: #BCE3DE; color: #0F6F66; }
-    &.stufe-azubi { background: var(--gut-hell); border-color: #BFDDC8; color: var(--gut); }
+    &.stufe-azubi { background: var(--gut-hell); border-color: var(--gut-kante); color: var(--gut); }
     &.stufe-team { background: var(--band); border-color: var(--linie); color: var(--schiefer); }
   }
   .fundus-person .fundus-titel { margin-inline-start: 0; }
@@ -3223,7 +3236,7 @@ html:not(.dark-mode) {
       background: var(--text); border-color: var(--text); color: var(--flaeche) !important; fill: var(--flaeche) !important;
       padding-inline: 10px 14px;
     }
-    #save-button:hover, #save-button:focus-visible { background: #33333A; border-color: #33333A; }
+    #save-button:hover, #save-button:focus-visible { background: var(--text-hover); border-color: var(--text-hover); }
     .dropdown-menu.wide textarea { width: 100%; }
   }
   .page-editor-page-area {
@@ -3264,7 +3277,7 @@ html:not(.dark-mode) {
   @media print {
     &.fundus-ki-offen body { padding-right: 0; }
     .fundus-ki, .fundus-leisten-knopf, .fundus-suche, .back-to-top, #bkmrk-fundus-dateitext { display: none !important; }
-    body { background: #fff; }
+    body { background: var(--flaeche); }
     .tri-layout-middle-contents { max-width: none !important; }
     .content-wrap.card { border: 0; padding: 0; }
     .page-content {
@@ -3312,7 +3325,7 @@ html:not(.dark-mode) {
     #oidc-login {
       background: var(--text); border-color: var(--text); color: var(--flaeche);
       svg { fill: currentColor; }
-      &:hover, &:focus { background: #33333A; border-color: #33333A; color: var(--flaeche); }
+      &:hover, &:focus { background: var(--text-hover); border-color: var(--text-hover); color: var(--flaeche); }
     }
     /* Fehlermeldung „Anmeldedaten falsch“ (BookStacks Hinweis oben rechts) bleibt, wie sie ist. */
   }
