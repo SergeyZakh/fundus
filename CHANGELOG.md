@@ -4,6 +4,15 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 
 ## Unveröffentlicht
 
+## [0.2.0] – 2026-10-01
+
+Sicherheit, BookStack 26.09.1 und kleinere Verbesserungen an der Oberfläche. Weiterhin eine Vorabversion.
+
+**Aktualisieren.** Vorher sichern (`docker compose exec sicherung bash /skripte/sicherung.sh jetzt`),
+dann `git pull` und `docker compose -p fundus up -d --build`. Compose legt dabei das neue interne Netz
+für die Texterkennung an und startet die Dienste mit den neuen Images. Am Inhalt des Wikis ändert sich
+nichts. Wer `einrichten.py` nutzt, kann es danach mit `--texte` laufen lassen, muss es aber nicht.
+
 ### Neu
 
 - `einrichten.py --texte` bringt die Beschreibungen von Bereichen, Themen und Abschnitten auf den
@@ -35,7 +44,8 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
   holen die Listen selbst; mit älteren Versionen laufen sie weiter.
 - Ollama 0.34.4 (vorher 0.34.2).
 - Am Handy zeigt die Pfadleiste statt dreier Symbole ohne Text nur das übergeordnete Glied, etwa
-  „‹ Exchange Online“: eine Ebene zurück, wie in Handy-Apps. Am PC bleibt der ganze Pfad.
+  „‹ Exchange Online“. Ein Tipp darauf führt eine Ebene zurück, wie man es aus Handy-Apps kennt. Am PC
+  bleibt der ganze Pfad.
 - Der Fuß des Chats sagt nur noch „Antworten können Fehler enthalten, prüf die Quelle.“ und passt
   damit auch in die schmale Seitenleiste in eine Zeile. Die Handbuch-Bilder des Chats sind neu aufgenommen.
 - Rauchtest, Handbuch-Bilder und Vorstellungsbilder steuern Chrome über ein gemeinsames Modul
@@ -92,4 +102,5 @@ Erste öffentliche Version, als Vorabversion gekennzeichnet.
 - **Prüfungen** in GitHub Actions, Dependabot für Images und Actions, dazu Theme-Tests, ein
   Rauchtest für die Oberfläche und ein Test der Anmeldung mit echtem Keycloak.
 
+[0.2.0]: https://github.com/SergeyZakh/fundus/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/SergeyZakh/fundus/releases/tag/v0.1.0
