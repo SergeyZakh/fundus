@@ -1,6 +1,6 @@
-// Baut docs/ENTWICKLUNG.pdf aus docs/ENTWICKLUNG.md (Aussehen: docs/pdf-stil.css).
+// Baut docs/ENTWICKLUNG.pdf aus docs/ENTWICKLUNG.md (Aussehen: stil.css daneben).
 //
-//   node docs/pdf-bauen.mjs            (Chrome-Pfad über die Variable CHROME änderbar)
+//   node skripte/pdf/bauen.mjs            (Chrome-Pfad über die Variable CHROME änderbar)
 //
 // Ablauf: Markdown mit marked (liegt schon im Theme) in HTML umwandeln, Deckblatt, Inhaltsverzeichnis,
 // Kapitelnummern und Hinweiskästen ergänzen, in headless Chrome öffnen und als PDF drucken.
@@ -11,15 +11,17 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { chromePfad } from '../skripte/chrome.mjs';
+import { chromePfad } from '../chrome.mjs';
 
 const HIER = path.dirname(fileURLToPath(import.meta.url));
-const QUELLE = path.join(HIER, 'ENTWICKLUNG.md');
-const ZIEL = path.join(HIER, 'ENTWICKLUNG.pdf');
-// Zwischendatei neben der Quelle, damit relative Pfade zu Bildern und Schrift stimmen; wird am Ende gelöscht.
-const ZWISCHEN = path.join(HIER, '.ENTWICKLUNG-druck.html');
+const DOCS = path.join(HIER, '..', '..', 'docs');
+const QUELLE = path.join(DOCS, 'ENTWICKLUNG.md');
+const ZIEL = path.join(DOCS, 'ENTWICKLUNG.pdf');
+const STIL = pathToFileURL(path.join(HIER, 'stil.css')).href;
+// Zwischendatei neben der Quelle, damit die relativen Pfade der Bilder stimmen; wird am Ende gelöscht.
+const ZWISCHEN = path.join(DOCS, '.ENTWICKLUNG-druck.html');
 const CHROME = chromePfad();
-const { marked } = createRequire(import.meta.url)('../theme/fundus/ki/vendor/marked.umd.js');
+const { marked } = createRequire(import.meta.url)('../../theme/fundus/ki/vendor/marked.umd.js');
 
 const maskieren = (t) => String(t).replace(/[&<>"]/g, (z) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[z]));
 const klartext = (html) => html.replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'");
@@ -105,7 +107,7 @@ const inhalt = `<section class="inhalt">
 </section>`;
 
 fs.writeFileSync(ZWISCHEN, `<!doctype html><html lang="de"><head><meta charset="utf-8">
-<title>${maskieren(kopf.titel || '')} – Entwicklerdokumentation</title><link rel="stylesheet" href="pdf-stil.css"></head>
+<title>${maskieren(kopf.titel || '')} – Entwicklerdokumentation</title><link rel="stylesheet" href="${STIL}"></head>
 <body>${deckblatt}${inhalt}${html}</body></html>`);
 
 // ---------- Drucken mit headless Chrome ----------

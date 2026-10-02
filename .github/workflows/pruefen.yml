@@ -22,7 +22,7 @@ jobs:
 
       - name: JavaScript
         # Fremdbibliotheken in vendor/ sind minifiziert und werden nicht geprüft.
-        run: find theme skripte docs \( -name '*.js' -o -name '*.mjs' \) -not -path '*/vendor/*' -print0 | xargs -0 -n1 node --check
+        run: find theme skripte \( -name '*.js' -o -name '*.mjs' \) -not -path '*/vendor/*' -print0 | xargs -0 -n1 node --check
 
       - name: Python
         run: python3 -m py_compile skripte/*.py ocr/*.py

@@ -2,7 +2,13 @@
 
 Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen nach [Semantic Versioning](https://semver.org/lang/de/).
 
-## Unveröffentlicht
+## [Unveröffentlicht]
+
+### Geändert
+
+- Das Skript für die PDF der Entwicklerdoku liegt jetzt bei den anderen unter `skripte/pdf/`
+  (`node skripte/pdf/bauen.mjs`). Die Entwicklerdoku nennt das Prüfwerkzeug der Texterkennung
+  (`ocr/probe.py`) und zeigt alle Ordner des Themes.
 
 ## [1.0.0] – 2026-10-02
 
@@ -123,6 +129,7 @@ Erste öffentliche Version, als Vorabversion gekennzeichnet.
 - **Prüfungen** in GitHub Actions, Dependabot für Images und Actions, dazu Theme-Tests, ein
   Rauchtest für die Oberfläche und ein Test der Anmeldung mit echtem Keycloak.
 
+[Unveröffentlicht]: https://github.com/SergeyZakh/fundus/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/SergeyZakh/fundus/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/SergeyZakh/fundus/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/SergeyZakh/fundus/releases/tag/v0.1.0

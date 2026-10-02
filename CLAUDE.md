@@ -30,7 +30,7 @@ bash skripte/testen.sh              # Teststapel: Theme-Tests, Sicherung, Wieder
 bash skripte/anmeldung-testen.sh    # eigener Stapel mit echtem Keycloak
 node --check theme/fundus/public/wiki.js
 
-node docs/pdf-bauen.mjs             # ENTWICKLUNG.md -> .pdf (nicht eingecheckt)
+node skripte/pdf/bauen.mjs          # ENTWICKLUNG.md -> .pdf (nicht eingecheckt)
 bash skripte/handbuch-einspielen.sh --trockenlauf
 ```
 

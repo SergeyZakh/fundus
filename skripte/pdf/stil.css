@@ -1,12 +1,12 @@
-/* Aussehen der PDF, die docs/pdf-bauen.mjs aus docs/ENTWICKLUNG.md baut.
+/* Aussehen der PDF, die skripte/pdf/bauen.mjs aus docs/ENTWICKLUNG.md baut.
    Bewusst zurückhaltend: Schwarz, Grautöne, feine Linien, keine Symbole, keine Akzentfarben.
 
    Inhalt: Grundlagen · Deckblatt · Inhaltsverzeichnis · Überschriften · Text und Listen
            · Code · Tabellen · Hinweise · Abbildungen */
 
 /* ---------- Grundlagen ---------- */
-@font-face { font-family: 'Instrument Sans'; font-weight: 400 600; src: url(../theme/fundus/public/fonts/instrument-sans-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215; }
-@font-face { font-family: 'Instrument Sans'; font-weight: 400 600; src: url(../theme/fundus/public/fonts/instrument-sans-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+A720-A7FF; }
+@font-face { font-family: 'Instrument Sans'; font-weight: 400 600; src: url(../../theme/fundus/public/fonts/instrument-sans-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215; }
+@font-face { font-family: 'Instrument Sans'; font-weight: 400 600; src: url(../../theme/fundus/public/fonts/instrument-sans-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+A720-A7FF; }
 
 :root {
   --text: #141414;

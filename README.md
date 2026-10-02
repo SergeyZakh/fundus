@@ -231,7 +231,7 @@ Ersteinrichtung, Anmeldung, Update, Sicherung und Wiederherstellung beschreibt d
 | `keycloak/` | Realm-Vorlage für die mitgelieferte Anmeldung |
 | `handbuch/` | Handbuch „So funktioniert das Wiki“ für Mitarbeitende, wird ins Wiki eingespielt |
 | `vorlagen/` | Artikelvorlagen (Anleitung, Prozess, Checkliste, Kundenüberblick) |
-| `docs/` | Entwicklerdoku; PDF-Fassung mit `node docs/pdf-bauen.mjs` |
+| `docs/` | Entwicklerdoku und Erste Schritte; PDF-Fassung mit `node skripte/pdf/bauen.mjs` |
 
 ## Anpassen und erweitern
 

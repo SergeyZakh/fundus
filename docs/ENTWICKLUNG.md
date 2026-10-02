@@ -15,7 +15,7 @@ fakten:
 <!--
   So bearbeitest du diese Datei
   ─────────────────────────────
-  PDF neu bauen:   node docs/pdf-bauen.mjs
+  PDF neu bauen:   node skripte/pdf/bauen.mjs
   Kapitel:         # Titel            (automatisch nummeriert, im Inhaltsverzeichnis)
   Unterkapitel:    ## Titel           (automatisch nummeriert, im Inhaltsverzeichnis)
   Anhang:          # Anhang: Titel    (Buchstabe statt Nummer)
@@ -24,7 +24,7 @@ fakten:
   Hinweise:        > [!NOTE] / [!TIP] / [!WARNING] / [!CAUTION] in eigener Zeile,
                    darunter > **Titel**, dann der Text (so zeigt GitHub sie als Kästen)
   Bilder:          ![Bildunterschrift](bilder/datei.svg)
-  Aussehen:        docs/pdf-stil.css
+  Aussehen:        skripte/pdf/stil.css
 -->
 
 # Überblick
@@ -103,7 +103,8 @@ fundus/
 ├── theme/fundus/             das Theme
 │   ├── functions.php         Einstieg: Bausteine, Routen, Ereignisse
 │   ├── fundus/*.blade.php    Bausteine (Startseite, Chat, Rückmeldung …)
-│   ├── public/wiki.js, .css  Verhalten und Gestaltung
+│   ├── users/, auth/         zwei BookStack-Views, die das Theme ersetzt oder füllt (Kapitel „Update“)
+│   ├── public/               wiki.js und wiki.css, Schrift, App-Icons (icon*.png erzeugt)
 │   ├── ki/                   KI-Chat, Fremdbibliotheken in vendor/
 │   ├── rueckmeldung/, pruefung/, hinweise/, aktivitaet/
 │   │                         Rückmeldungen, Prüffristen, Benachrichtigungen, Aktivität
@@ -111,14 +112,18 @@ fundus/
 │   ├── anmeldung/            Berufstitel (im Wiki gepflegt, optional aus dem OIDC-Token)
 │   ├── lang/de_informal/     Begriffe (Bereich, Thema …)
 │   └── titel.php, symbole/   Berufstitel, Symbole
-├── ocr/, sicherung/          eigene Images für Texterkennung und Sicherung
+├── ocr/, sicherung/          eigene Images für Texterkennung und Sicherung (ocr/probe.py prüft den Dienst)
 ├── keycloak/                 Realm-Vorlage
 ├── skripte/                  Einrichtung, .env, Sicherung, Handbuch, Rauchtest
 │   ├── wiki-browser.mjs      Seite als Person rendern, headless Chrome steuern
+│   ├── handbuch-bilder/      Bilder des Handbuchs aus dem laufenden Wiki
+│   ├── vorstellung/          Folien und PDF für das Release
+│   ├── pdf/                  PDF dieser Doku
+│   ├── icon-bauen.mjs        App-Icons
 │   └── testen.sh, tests/     Theme-Tests mit Sicherung und Wiederherstellung
 ├── handbuch/, vorlagen/      Inhalte, die ins Wiki eingespielt werden
 ├── .github/                  Prüfungen (Actions), Dependabot, Vorlagen für Issues
-└── docs/                     diese Doku
+└── docs/                     diese Doku und Erste Schritte
 ```
 
 ## So funktioniert das Theme
@@ -496,6 +501,7 @@ Stand 02.10.2026.
 | Rechte: Mitarbeiter, Azubi, Einzelfreigabe, Übersichten, Symbole, KI-Quellen, Gäste bei öffentlichem Zugriff | automatisiert (`testen.sh`) |
 | Rückmeldungen, Prüfung von Artikeln, Benachrichtigungen, Aktivität und Serie, KI-Zerlegung und -Suche, Papierkorb | automatisiert (`testen.sh`) |
 | Texterkennung: Block, Suche, Rechte, entfernte Bilder, Stücke für die KI | automatisiert (`testen.sh`) |
+| Dienst `ocr` selbst: PDF mit Text, Scan, Bild, Rauschen, falscher Dateityp, kaputtes PDF | von Hand (`ocr/probe.py`, Anhang B) |
 | Sicherung anlegen, in leeren Stapel zurückspielen, bei angehaltenem Wiki erneut zurückspielen | automatisiert (`testen.sh`) |
 | Abgebrochener Dump und ungültige Uhrzeit landen als Fehler im Status | automatisiert (`testen.sh`) |
 | Kopie außer Haus: verschlüsselt, zurückholen, Ausfall des Ziels, keine Geheimnisse im Status | automatisiert (`testen.sh`) |
@@ -562,6 +568,10 @@ docker exec -u abc -w /app/www fundus-wiki-1 php artisan fundus:ki-index
 # Texterkennung für vorhandene Anhänge und Bilder (--neu: auch schon erkannte, etwa nach neuen Schwellen)
 docker exec -u abc -w /app/www fundus-wiki-1 php artisan fundus:datei-text
 
+# Texterkennung selbst prüfen: erkennt selbst gebaute Testdateien (PDF mit Text, Scan, Bild);
+# --beispiel scan.pdf (auch text.pdf, scan.png) gibt eine Datei zum Hochladen im Wiki aus
+docker compose exec ocr python3 /app/probe.py
+
 # Prüfen
 bash skripte/testen.sh
 node skripte/rauchtest.mjs
@@ -583,5 +593,5 @@ docker exec fundus-wiki-1 sh -c '
   chown -R abc:users /config/www/uploads /config/www/files /config/www/images'
 
 # Diese Doku als PDF
-node docs/pdf-bauen.mjs
+node skripte/pdf/bauen.mjs
 ```
