@@ -4,6 +4,16 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 
 ## Unveröffentlicht
 
+## [1.0.0] – 2026-10-02
+
+Die erste reguläre Version. Gegenüber 0.2.0 ändert sich am Wiki nichts, neu sind ein fester Name für
+den Compose-Stapel und überarbeitete Anleitungen. Fundus ist für den Betrieb im eigenen Firmennetz
+hinter einem Reverse Proxy mit TLS gedacht.
+
+**Aktualisieren.** Vorher sichern (`docker compose -p fundus exec sicherung bash /skripte/sicherung.sh jetzt`),
+dann `git pull` und `docker compose -p fundus up -d --build`. Container und Daten bleiben dieselben.
+Wer Fundus aus der ZIP betreibt, folgt der Zeile „Neue Version“ in [Erste Schritte](docs/START.md).
+
 ### Geändert
 
 - Der Stapel heißt jetzt fest `fundus` (`name:` in `docker-compose.yml`). Befehle wie
@@ -113,5 +123,6 @@ Erste öffentliche Version, als Vorabversion gekennzeichnet.
 - **Prüfungen** in GitHub Actions, Dependabot für Images und Actions, dazu Theme-Tests, ein
   Rauchtest für die Oberfläche und ein Test der Anmeldung mit echtem Keycloak.
 
+[1.0.0]: https://github.com/SergeyZakh/fundus/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/SergeyZakh/fundus/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/SergeyZakh/fundus/releases/tag/v0.1.0
