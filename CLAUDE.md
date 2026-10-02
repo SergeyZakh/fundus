@@ -38,7 +38,7 @@ bash skripte/handbuch-einspielen.sh --trockenlauf
 
 - **Immer `docker exec -u abc …`.** Als root angelegte Cache-Dateien kann das Wiki nicht mehr
   beschreiben, einzelne Artikel liefern dann Fehler 500. Reparatur steht in Anhang B der
-  Entwicklerdoku. Der Containername hängt am Projekt: mit `-p fundus` heißt er `fundus-wiki-1`.
+  Entwicklerdoku. Der Projektname steht als `name: fundus` in `docker-compose.yml`, der Container heißt `fundus-wiki-1`.
 - **Theme-Änderungen sind sofort live.** `./theme/fundus` ist in den Container gemountet, absichtlich
   ohne `:ro`. Ein halb gespeichertes `functions.php` wirft sofort Fehler im laufenden Wiki — erst
   fertig schreiben, dann speichern.

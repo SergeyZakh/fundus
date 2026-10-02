@@ -15,6 +15,10 @@
 #   ollama-modelle  lädt beim Start KI_MODELL und KI_EINBETTUNG in das Volume und beendet sich
 #   sicherung       wartet bis SICHERUNG_UHRZEIT und sichert Datenbank und Uploads
 
+# Fester Projektname, damit Befehle wie „docker compose exec sicherung …“ den Stapel auch dann treffen,
+# wenn der Ordner anders heißt (aus der ZIP etwa fundus-1.0.0). Die Teststapel setzen mit -p einen eigenen.
+name: fundus
+
 services:
   wiki:
     # Community-Image von linuxserver.io; BookStack selbst bietet kein offizielles

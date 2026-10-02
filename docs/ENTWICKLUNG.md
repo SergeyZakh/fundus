@@ -2,7 +2,7 @@
 titel: Fundus
 untertitel: Das Firmenwiki und seine KI – Aufbau, Betrieb und Pflege.
 marke: Fundus · Entwicklerdoku
-stand: 01.10.2026
+stand: 02.10.2026
 fakten:
   - BookStack 26.09.1 | linuxserver-Image, Theme „fundus“
   - MariaDB 11.8 | Inhalte, Rückmeldungen, KI-Vektoren
@@ -394,7 +394,8 @@ gilt `titel.php`.
    neuen Version vergleichen, ob neue Daten oder Abschnitte dazugekommen sind.
    Außerdem füllt das Theme BookStacks leeren Platzhalter `auth/parts/login-message` (Begrüßung auf der
    Anmeldeseite); wiki.css erkennt die Seite an `#login-form`, beides muss es noch geben.
-4. Produktiv: sofort sichern, dann `git pull` und `docker compose -p fundus up -d --build`.
+4. Produktiv: sofort sichern, dann `git pull` und `docker compose -p fundus up -d --build`. Läuft Keycloak mit, gehören
+   `-f docker-compose.yml -f docker-compose.keycloak.yml` dazu, sonst bleibt Keycloak auf dem alten Stand.
 
 ## Sicherung und Wiederherstellung
 
@@ -484,7 +485,7 @@ node skripte/vorstellung/bauen.mjs 3                # nur Folie 3
 
 # Stand und offene Punkte
 
-Stand 01.10.2026.
+Stand 02.10.2026.
 
 ## Tests
 
@@ -546,7 +547,9 @@ Probleme, die schon einmal Zeit gekostet haben. Bei merkwürdigem Verhalten zuer
 
 # Anhang: Befehle
 
-Mit dem Projektnamen `fundus` (`-p fundus`) heißt der Container `fundus-wiki-1`, lokal wie im Betrieb.
+Der Projektname steht fest in `docker-compose.yml` (`name: fundus`). Der Container heißt deshalb `fundus-wiki-1`,
+lokal wie im Betrieb und unabhängig vom Ordnernamen, und `docker compose exec …` trifft den Stapel auch ohne
+`-p fundus`. Die Teststapel setzen mit `-p` einen eigenen Namen.
 
 ```bash
 # Stapel lokal
