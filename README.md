@@ -1,6 +1,6 @@
 # Fundus
 
-**Firmenwiki mit KI-Suche zum Selbstbetreiben – die Inhalte verlassen das eigene Netz nicht.**
+**Ein Firmenwiki mit KI-Suche zum Selbstbetreiben, dessen Inhalte das eigene Netz nicht verlassen.**
 
 [![Prüfen](https://github.com/SergeyZakh/fundus/actions/workflows/pruefen.yml/badge.svg)](https://github.com/SergeyZakh/fundus/actions/workflows/pruefen.yml)
 [![Neueste Version](https://img.shields.io/github/v/release/SergeyZakh/fundus?label=Version)](https://github.com/SergeyZakh/fundus/releases/latest)
@@ -8,19 +8,19 @@
 [![Ohne fremde Cloud](https://img.shields.io/badge/Inhalte-bleiben%20im%20Haus-brightgreen)](#was-im-haus-bleibt)
 
 Fundus ist ein Theme für [BookStack](https://www.bookstackapp.com/) mit einem fertigen
-Docker-Compose-Stapel: Wiki, Datenbank, draw.io, Texterkennung für Anhänge, Sprachmodell und
-nächtliche Sicherung. Der KI-Chat „Frag Fundus“ beantwortet Fragen aus den Artikeln – und nur aus
-denen, die die fragende Person auch selbst öffnen darf.
+Docker-Compose-Stapel aus Wiki, Datenbank, draw.io, Texterkennung für Anhänge, Sprachmodell und
+nächtlicher Sicherung. Der KI-Chat „Frag Fundus“ beantwortet Fragen aus den Artikeln, und zwar nur
+aus denen, die die fragende Person auch selbst öffnen darf.
 
 > [!TIP]
 > Keine technischen Vorkenntnisse? **[Erste Schritte](docs/START.md)** erklärt jeden Schritt
-> einzeln – von Docker Desktop bis zum eingerichteten Wiki auf einem Windows-Rechner.
+> einzeln, von Docker Desktop bis zum eingerichteten Wiki auf einem Windows-Rechner.
 
 > [!CAUTION]
 > Fundus ist für den Betrieb im eigenen Firmennetz gedacht. Ich rate davon ab, das Wiki mit echten
-> Inhalten ohne Reverse Proxy mit TLS offen ins Internet zu stellen. Version 0.1 ist eine
-> Vorabversion: Probier sie zuerst mit den Beispielinhalten aus, bevor echtes Firmenwissen
-> hineinkommt.
+> Inhalten ohne Reverse Proxy mit TLS offen ins Internet zu stellen. Probier es zuerst mit den
+> Beispielinhalten aus, bevor echtes Firmenwissen hineinkommt, und richte die Sicherung außer Haus
+> ein, bevor du dich darauf verlässt.
 
 **Anleitungen:** [Erste Schritte](docs/START.md) (ohne Vorkenntnisse, Schritt für Schritt) ·
 [Entwicklung und Betrieb](docs/ENTWICKLUNG.md) · [Mitmachen](CONTRIBUTING.md) ·
@@ -43,30 +43,30 @@ denen, die die fragende Person auch selbst öffnen darf.
 | **Für** | ausprobieren, entwickeln, Inhalte vorbereiten | Firmen, die ihr Wissen an einem Ort sammeln |
 | **Start** | `docker-compose.lokal.yml`, fertig unter `localhost:6875` | `docker-compose.yml` hinter einem Reverse Proxy mit TLS |
 | **Anmeldung** | lokales Konto in BookStack | Firmenkonten über OIDC, Keycloak-Realm liegt bei |
-| **Sicherung** | aus | nächtlich, verschlüsselte Kopie außer Haus per rclone |
+| **Sicherung** | nächtlich auf dem Rechner | nächtlich, dazu eine verschlüsselte Kopie außer Haus per rclone |
 | **Sprachmodell** | Ollama im Stapel (Modelle rund 4 GB) | Ollama im Stapel oder auf einem vorhandenen Server |
 
 ![Startseite: Suchfeld, eigene Aktivität, Bereiche mit ihren Themen und die Listen rechts](handbuch/bilder/startseite.png)
 
-1. **Suchfeld** – öffnet die Schnellsuche, genau wie `Strg` + `K`.
-2. **Deine Aktivität** – was du in zwölf Monaten angelegt, bearbeitet und gelesen hast. Das sieht
-   nur du.
-3. **Bereiche** mit ihren Themen; ein Klick öffnet das Thema direkt.
-4. **Listen** – Werkzeuge der Firma, zuletzt Geändertes, deine Entwürfe und Favoriten.
+1. Das **Suchfeld** öffnet die Schnellsuche, genau wie `Strg` + `K`.
+2. **Deine Aktivität** zeigt, was du in zwölf Monaten angelegt, bearbeitet und gelesen hast. Das
+   siehst nur du.
+3. Die **Bereiche** stehen mit ihren Themen da, ein Klick öffnet das Thema direkt.
+4. Die **Listen** führen die Werkzeuge der Firma, zuletzt Geändertes, deine Entwürfe und Favoriten.
 
 ## Warum?
 
-Firmenwissen liegt verstreut: in Mail-Postfächern, in Ordnern auf dem Server, im Kopf des
-Kollegen, der gerade im Urlaub ist. Ein Wiki hilft nur, wenn man darin auch findet, was man
-sucht – und wenn niemand befürchten muss, dass die Inhalte bei einem fremden Anbieter landen.
+Ein Wiki hilft nur, wenn man darin auch findet, was man sucht, und wenn niemand befürchten muss,
+dass die Inhalte bei einem fremden Anbieter landen.
 
-Fundus setzt deshalb auf BookStack und ergänzt, was im Alltag fehlt: eine KI, die aus den eigenen
-Artikeln antwortet und die Quelle nennt, Rückmeldungen unter jedem Artikel, Prüffristen gegen
-veraltetes Wissen und ein Handbuch, das neue Kolleginnen und Kollegen selbst lesen können.
+Fundus setzt deshalb auf BookStack und ergänzt, was im Alltag fehlt, nämlich eine KI, die aus
+den eigenen Artikeln antwortet und die Quelle nennt, Rückmeldungen unter jedem Artikel,
+Prüffristen gegen veraltetes Wissen und ein Handbuch, das neue Kolleginnen und Kollegen selbst
+lesen können.
 
 > [!IMPORTANT]
 > Antworten der KI sind **Hinweise, keine Freigabe**. Unter jeder Aussage steht die Quelle; lies
-> den Artikel, bevor du danach handelst. Das Wiki merkt sich jede Fassung – Ändern ist also
+> den Artikel, bevor du danach handelst. Das Wiki merkt sich jede Fassung, Ändern ist also
 > ungefährlich.
 
 ## Wie die KI arbeitet
@@ -83,8 +83,8 @@ flowchart LR
 ```
 
 Das Indexieren läuft in der Warteschlange; Speichern wartet nie auf die KI. Gesucht wird
-ausschließlich in Artikeln, die BookStacks eigene Sichtbarkeitsprüfung freigibt – dieselbe
-Prüfung wie beim Öffnen.
+ausschließlich in Artikeln, die BookStacks eigene Sichtbarkeitsprüfung freigibt, also mit
+derselben Prüfung wie beim Öffnen.
 
 ## Funktionen
 
@@ -104,7 +104,7 @@ Prüfung wie beim Öffnen.
   bis auf den Text ausblendet.
 
 - **Fundus meldet, was ansteht.** Wird einer deiner Artikel als veraltet gemeldet oder ist eine
-  Prüfung fällig, steht das am Chatknopf — ohne dass jemand eine Mail schreiben muss.
+  Prüfung fällig, steht das am Chatknopf, ohne dass jemand eine Mail schreiben muss.
 
 - **Texterkennung.** Text aus hochgeladenen PDFs und Bildern wird durchsuchbar und steht auch der
   KI zur Verfügung. Nimmt man ein Bild aus dem Artikel, verschwindet auch sein Text.
@@ -126,10 +126,10 @@ Den Chat öffnet der runde Knopf mit dem **F** unten rechts.
 
 ![Chatfenster von Fundus mit Frage, Antwort und Quellen](handbuch/bilder/fundus.png)
 
-1. **Quellennummer** – jede Aussage trägt die Nummer der Stelle, aus der sie stammt.
-2. **Quellen** – ein Klick klappt das wörtliche Zitat auf, **Im Artikel ansehen** öffnet die
+1. Die **Quellennummer** zeigt bei jeder Aussage, aus welcher Stelle sie stammt.
+2. Unter **Quellen** klappt ein Klick das wörtliche Zitat auf, **Im Artikel ansehen** öffnet die
    Stelle.
-3. **Vollbild** – mit früheren Gesprächen und allen Quellen des Gesprächs.
+3. Das **Vollbild** zeigt frühere Gespräche und alle Quellen des Gesprächs.
 
 `Strg` + `K` (am Mac `Cmd` + `K`) öffnet die Schnellsuche von jeder Seite aus. Die Treffer
 erscheinen beim Tippen, mit Pfad und Textausschnitt; `Enter` öffnet, `Esc` schließt.
@@ -157,8 +157,8 @@ python skripte/env-anlegen.py --lokal
 docker compose -p fundus -f docker-compose.yml -f docker-compose.lokal.yml up -d
 ```
 
-Nach etwa zwei Minuten läuft das Wiki unter <http://localhost:6875>. Erste Anmeldung mit
-`admin@admin.com` / `password` – und sofort ändern.
+Nach etwa zwei Minuten läuft das Wiki unter <http://localhost:6875>. Die erste Anmeldung geht mit
+`admin@admin.com` und `password`, beides gleich danach ändern.
 
 Rollen, Bereiche und Vorlagen einrichten (API-Token unter *Einstellungen → Benutzer → Admin →
 API-Token* anlegen):
@@ -206,7 +206,7 @@ Ersteinrichtung, Anmeldung, Update, Sicherung und Wiederherstellung beschreibt d
 
 - **Keine Anfragen nach außen.** Schrift im Theme, eigenes draw.io, kein Gravatar. Einzige
   Ausnahme ist der Dienst `ollama-modelle`, der beim ersten Start die Modelle von ollama.com
-  lädt – Fragen und Artikel gehen nie hinaus.
+  lädt. Fragen und Artikel gehen nie hinaus.
 
 - **Die KI sieht nur, was die fragende Person sieht.** Jede eigene Abfrage läuft über BookStacks
   `scopes('visible')`. Listen, Suche und Chat zeigen nie mehr, als sich auch öffnen ließe.
@@ -245,9 +245,9 @@ Ersteinrichtung, Anmeldung, Update, Sicherung und Wiederherstellung beschreibt d
 
 ## Mitmachen
 
-Fehler und Vorschläge als [Issue](../../issues). Ablauf für Änderungen, Tests und Schreibweise:
-[CONTRIBUTING.md](CONTRIBUTING.md). Aufbau, Datenmodell und Fallstricke:
-[docs/ENTWICKLUNG.md](docs/ENTWICKLUNG.md).
+Fehler und Vorschläge sind als [Issue](../../issues) willkommen. Wie Änderungen, Tests und
+Schreibweise ablaufen, steht in [CONTRIBUTING.md](CONTRIBUTING.md), Aufbau, Datenmodell und
+Fallstricke in der [Entwicklerdoku](docs/ENTWICKLUNG.md).
 
 > [!CAUTION]
 > Sicherheitslücken bitte **nicht** als Issue melden, sondern über den privaten Weg in
@@ -255,11 +255,10 @@ Fehler und Vorschläge als [Issue](../../issues). Ablauf für Änderungen, Tests
 
 ## Lizenz
 
-[MIT](LICENSE) – nutzen, ändern, weitergeben, auch im Betrieb. Fehler, Wünsche und Ideen sind
-willkommen ([CONTRIBUTING.md](CONTRIBUTING.md)); Sicherheitslücken bitte nicht als Issue, sondern
-über [SECURITY.md](SECURITY.md) melden.
+Fundus steht unter der [MIT-Lizenz](LICENSE). Du darfst es nutzen, ändern und weitergeben, auch
+im Betrieb einer Firma.
 
-Mitgeliefert: die Schrift **Instrument Sans** unter der
+Mitgeliefert sind die Schrift **Instrument Sans** unter der
 [SIL Open Font License 1.1](theme/fundus/public/fonts/OFL.txt), die Symbole von **Lucide** unter
 der [ISC License](theme/fundus/symbole/LICENSE) und für den KI-Chat **marked** (MIT),
 **DOMPurify** (Apache 2.0 / MPL 2.0) und **highlight.js** (BSD-3-Clause), mit ihren Lizenztexten in

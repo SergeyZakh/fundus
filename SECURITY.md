@@ -3,29 +3,31 @@
 ## Lücke melden
 
 Bitte **kein öffentliches Issue** für Sicherheitslücken. Melde sie über
-[GitHub Security Advisories](../../security/advisories/new) – das ist ein
+[GitHub Security Advisories](../../security/advisories/new). Das ist ein
 privater Kanal zwischen dir und mir.
 
 Ich schaue in der Regel innerhalb einer Woche hinein und melde mich, auch
-wenn ich noch keine Lösung habe. Das hier ist ein Freizeitprojekt, keine
-Firma mit Bereitschaft – plane bitte mit ein paar Tagen.
+wenn ich noch keine Lösung habe. Das hier ist ein Freizeitprojekt und keine
+Firma mit Bereitschaft, plane bitte mit ein paar Tagen.
 
-Hilfreich in der Meldung: BookStack-Version, welcher Teil betroffen ist und
-wie sich die Lücke nachstellen lässt.
+Hilfreich sind in der Meldung die BookStack-Version, welcher Teil betroffen
+ist und wie sich die Lücke nachstellen lässt.
 
 ## Was betroffen sein kann
 
 | Teil | Betroffen |
 | --- | --- |
-| `theme/fundus/` | ja – läuft im Wiki mit allen Rechten von BookStack |
-| `docker-compose*.yml`, `ocr/`, `sicherung/` | ja – Dienste, Netz, Sicherung |
+| `theme/fundus/` | ja, läuft im Wiki mit allen Rechten von BookStack |
+| `docker-compose*.yml`, `ocr/`, `sicherung/` | ja, Dienste, Netz und Sicherung |
 | `keycloak/` | ja, soweit die Realm-Vorlage betroffen ist |
 | `skripte/`, `docs/`, `handbuch/`, `vorlagen/` | nur, wenn daraus ein Fehler im Betrieb folgt |
 
-Lücken in BookStack selbst bitte direkt dort melden:
-<https://github.com/BookStackApp/BookStack/security>.
+Lücken in BookStack selbst bitte direkt bei
+[BookStack](https://github.com/BookStackApp/BookStack/security) melden.
 
-Unterstützt wird jeweils die neueste Version auf `main`.
+Unterstützt wird jeweils das neueste [Release](../../releases/latest).
+Korrekturen erscheinen als neue Version, ältere Versionen bekommen keine
+eigenen Nachbesserungen.
 
 ## Was Fundus selbst schützt
 
@@ -56,9 +58,9 @@ Unterstützt wird jeweils die neueste Version auf `main`.
   unverschlüsselt beim Ziel. Fundus weist Admins darauf hin, erzwingt es
   aber nicht.
 - Text aus Anhängen und Bildern (OCR) landet im Suchindex und bei der KI.
-  Wer Zugangsdaten als Screenshot hochlädt, macht sie damit durchsuchbar –
-  deshalb gilt im Handbuch: keine Zugangsdaten ins Wiki. Nimmt man das Bild
-  aus dem Artikel, verschwindet sein Text beim Speichern aus Artikel, Suche
+  Wer Zugangsdaten als Screenshot hochlädt, macht sie damit durchsuchbar.
+  Deshalb sagt das Handbuch, dass Zugangsdaten nicht ins Wiki gehören.
+  Nimmt man das Bild aus dem Artikel, verschwindet sein Text beim Speichern aus Artikel, Suche
   und KI; die Datei selbst bleibt in der Bildverwaltung, bis jemand sie dort
   löscht.
 - Gespräche mit der KI liegen im Browser (`localStorage`) und werden beim

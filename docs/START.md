@@ -18,7 +18,7 @@ Schritt 9 ins Wiki einspielt.
 | Aktivierte Virtualisierung | ist bei den meisten Rechnern an; sonst im BIOS/UEFI, meist Aufgabe der IT |
 | Docker Desktop | <https://www.docker.com/products/docker-desktop/> |
 | Python 3.10 oder neuer | <https://www.python.org/downloads/> |
-| Das Fundus-Projekt als ZIP | [GitHub-Seite](https://github.com/SergeyZakh/fundus) → grüner Knopf **Code** → **Download ZIP** |
+| Das Fundus-Projekt als ZIP | [Neueste Version auf GitHub](https://github.com/SergeyZakh/fundus/releases/latest) → unter **Assets** auf **Source code (zip)** |
 | Eine Internetverbindung beim ersten Start | Docker lädt Programme und KI-Modelle; auf der Platte belegen sie danach rund 17 GB |
 
 Docker Desktop ist für Privatleute, Ausbildung und kleine Firmen kostenlos; größere Firmen brauchen
@@ -42,11 +42,11 @@ unten den Haken bei **„Add python.exe to PATH“** setzen, dann *Install Now*.
 ### 3. Projekt entpacken
 
 Die ZIP-Datei von GitHub mit Rechtsklick → *Alle extrahieren* entpacken, zum Beispiel nach
-`C:\Fundus`. Darin liegt ein Ordner `fundus-main`.
+`C:\Fundus`. Darin liegt ein Ordner wie `fundus-1.0.0`; die Zahl am Ende ist die Version.
 
 ### 4. PowerShell im Ordner öffnen
 
-Den Ordner `fundus-main` im Explorer öffnen, oben in die Adressleiste klicken, `powershell` tippen
+Diesen Ordner im Explorer öffnen, oben in die Adressleiste klicken, `powershell` tippen
 und Enter drücken. Es öffnet sich ein Fenster, das schon im richtigen Ordner steht. Alle weiteren
 Befehle tippst oder kopierst du in dieses Fenster.
 
@@ -152,7 +152,7 @@ diesem Rechner offen. Für ein Team mit eigener Adresse und https bitte die IT a
 | Anhalten | Docker Desktop → *Containers* → beim Eintrag `fundus` auf das Stopp-Symbol |
 | Wieder starten | dort auf das Start-Symbol; startet Docker Desktop mit Windows, läuft alles von selbst |
 | Sicherung | läuft jede Nacht um 02:30 von selbst, solange der Rechner an ist; 14 Tage werden aufgehoben |
-| Neue Version | neue ZIP von GitHub laden, alles außer der Datei `.env` im Ordner ersetzen, dann Schritt 4 und 6 wiederholen. Die Inhalte des Wikis bleiben erhalten. |
+| Neue Version | Zuerst im alten Ordner sichern: `docker compose -p fundus exec sicherung bash /skripte/sicherung.sh jetzt`. Dann die neue ZIP laden und entpacken (Schritt 3), die Datei `.env` aus dem alten Ordner in den neuen kopieren und im neuen Ordner Schritt 4 und 6 wiederholen. Die Inhalte des Wikis bleiben erhalten, weil sie in Docker liegen und nicht im Ordner. Was sich geändert hat, steht in den [Änderungen](../CHANGELOG.md). |
 | Alles entfernen | im Ordner: `docker compose -p fundus down -v`. **Achtung:** Löscht auch alle Inhalte des Wikis. |
 
 ## Wenn etwas nicht klappt

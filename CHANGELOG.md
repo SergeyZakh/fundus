@@ -4,6 +4,17 @@ Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/), Versionen 
 
 ## Unveröffentlicht
 
+### Geändert
+
+- Der Stapel heißt jetzt fest `fundus` (`name:` in `docker-compose.yml`). Befehle wie
+  `docker compose exec sicherung …` treffen ihn damit auch ohne `-p fundus` und auch dann, wenn der
+  Ordner aus der ZIP etwa `fundus-1.0.0` heißt. Wer bisher mit `-p fundus` gestartet hat, behält
+  seine Container und Daten.
+- Die Erste-Schritte-Anleitung lädt Fundus als ZIP der neuesten Version statt des Entwicklungsstands
+  und beschreibt das Aktualisieren mit Sicherung und neuem Ordner.
+- README und SECURITY.md überarbeitet. Die README sagte, die Sicherung sei auf dem eigenen Rechner
+  aus, sie läuft dort aber ebenfalls jede Nacht.
+
 ## [0.2.0] – 2026-10-01
 
 Sicherheit, BookStack 26.09.1 und kleinere Verbesserungen an der Oberfläche. Weiterhin eine Vorabversion.
